@@ -27,6 +27,8 @@ class ShipperIndividual : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_shipper_individual)
+        sharedPreferences = getSharedPreferences("MyPrefs", MODE_PRIVATE)
+
         profileImg = findViewById(R.id.Profileimage)
         val editIcon: ImageView = findViewById(R.id.editIcon)
         val username: TextInputEditText = findViewById(R.id.username_input)

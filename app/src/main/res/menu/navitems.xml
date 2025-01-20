@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/loadboard"
+        android:title="Loads"
+        android:icon="@drawable/baseline_density_small_24"/>
+    <item
+        android:id="@+id/myload"
+        android:title="MyLoads"
+        android:icon="@drawable/baseline_car_rental_24"
+     />
+    <item
+        android:id="@+id/mytruck"
+        android:title="My Truck"
+        android:icon="@drawable/baseline_directions_car_24"
+       />
+    <item
+        android:id="@+id/Chats"
+        android:title="Chats"
+        android:icon="@drawable/baseline_chat_bubble_24"
+        />
+    <item
+        android:id="@+id/profile"
+        android:title="Profile"
+
+        android:icon="@drawable/baseline_manage_accounts_24"
+      />
+
+</menu>

@@ -26,6 +26,7 @@ class businessregis : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_businessregis)
+        sharedPreferences = getSharedPreferences("MyPrefs", MODE_PRIVATE)
 
         profileImg = findViewById(R.id.Profileimage)
         val editIcon: ImageView = findViewById(R.id.editIcon)
@@ -57,7 +58,7 @@ class businessregis : AppCompatActivity() {
                 editor.apply()
 
                 // Proceed to the next activity
-                val intent = Intent(this, CNIC::class.java)
+                val intent = Intent(this, HomeActivity::class.java)
                 startActivity(intent)
             }
         }
