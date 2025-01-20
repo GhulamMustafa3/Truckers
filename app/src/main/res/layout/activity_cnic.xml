@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context=".CNIC">
+
+    <LinearLayout
+        android:id="@+id/main"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <!-- CNIC Front Side -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="CNIC (FRONT SIDE)"
+            android:textColor="#000000"
+            android:layout_marginTop="76dp" />
+
+        <ImageView
+            android:id="@+id/cnic_front_image"
+            android:layout_width="wrap_content"
+            android:layout_height="350dp"
+            android:layout_marginTop="8dp"
+            android:background="#FFFFFF"
+            android:scaleType="centerCrop"
+            android:contentDescription="CNIC Front Image"
+            android:src="@drawable/cnicfront" />
+
+        <Button
+            android:id="@+id/add_photo_front"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Add a photo"
+            android:layout_gravity="center"
+            android:layout_marginTop="8dp"
+            android:padding="8dp"
+            android:background="@drawable/rectangleshape"
+            android:textColor="@color/black" />
+
+        <!-- CNIC Back Side -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="CNIC (BACK SIDE)"
+            android:textColor="#000000"
+            android:layout_marginTop="24dp" />
+
+        <ImageView
+            android:id="@+id/cnic_back_image"
+            android:layout_width="wrap_content"
+            android:layout_height="350dp"
+            android:src="@drawable/cnicback"
+            android:contentDescription="CNIC Back Image"
+            android:layout_marginTop="8dp"
+            android:scaleType="centerCrop"
+            android:background="#FFFFFF" />
+
+        <Button
+            android:id="@+id/add_photo_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Add a photo"
+            android:layout_gravity="center"
+            android:layout_marginTop="8dp"
+            android:padding="8dp"
+            android:background="@drawable/rectangleshape"
+            android:textColor="@color/black" />
+
+        <!-- CNIC Number Field -->
+        <EditText
+            android:id="@+id/cnic_number_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Enter CNIC NO"
+            android:padding="12dp"
+            android:background="@drawable/rectangleshape"
+            android:inputType="number"
+            android:layout_marginTop="24dp" />
+
+        <!-- Next Button -->
+        <Button
+            android:id="@+id/next_button_cnic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Next"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/rectangleshape"
+            android:textColor="@color/black"
+            android:layout_gravity="center" />
+
+    </LinearLayout>
+</ScrollView>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+android:padding="20dp"
+    android:background="@color/white"
+    tools:context=".DriverLisence">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Front Picture of Driving License"
+        android:textColor="#000000"
+        android:padding="12dp"
+        android:layout_marginTop="16dp" />
+
+    <!-- Driving License Image -->
+    <ImageView
+        android:id="@+id/driving_license_image"
+        android:layout_width="match_parent"
+        android:layout_height="230dp"
+        android:src="@drawable/lisencefront"
+        android:scaleType="centerCrop"
+        android:contentDescription="Driving License Image"
+        android:layout_marginTop="8dp"
+        android:background="#FFFFFF" />
+
+    <!-- Add Photo Button -->
+    <Button
+        android:id="@+id/add_photo_license"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add a photo"
+        android:layout_marginTop="18dp"
+        android:layout_gravity="center"
+        android:padding="10dp"
+        android:background="@drawable/rectangleshape"
+        android:textColor="@color/black" />
+
+    <!-- Next Button -->
+    <Button
+        android:id="@+id/next_button_license"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Next"
+        android:layout_gravity="center"
+        android:layout_marginTop="24dp"
+        android:background="@drawable/rectangleshape"
+        android:textColor="@color/black"
+        android:padding="12dp" />
+
+</LinearLayout>

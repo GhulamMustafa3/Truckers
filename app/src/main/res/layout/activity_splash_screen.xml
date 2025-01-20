@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".SplashScreen">
+    <ImageView
+        android:layout_width="500dp"
+        android:layout_height="300dp"
+        android:src="@drawable/map"
+        android:layout_centerInParent="true"
+        android:id="@+id/map"/>
+    <ImageView
+        android:layout_width="500dp"
+        android:layout_height="80dp"
+        android:src="@drawable/truck"
+        android:layout_alignBottom="@+id/map"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="70dp"
+        android:id="@+id/Truck"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Truckers"
+        android:textSize="50dp"
+        android:textStyle="bold"
+        android:layout_alignBottom="@+id/map"
+        android:layout_alignParentBottom="true"
+        android:fontFamily="@font/robotoitalic"
+        android:layout_marginBottom="60dp"
+        android:id="@+id/Truckerstext"
+        android:layout_centerHorizontal="true"
+        android:textColor="@color/black"/>
+
+</RelativeLayout>
