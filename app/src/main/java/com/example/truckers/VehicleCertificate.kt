@@ -1,8 +1,10 @@
 package com.example.truckers
 
 import android.app.Activity
+import android.content.ContentValues
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
@@ -11,6 +13,8 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import java.io.File
+import java.io.FileOutputStream
 
 class VehicleCertificate : AppCompatActivity() {
     private lateinit var fImg: ImageView
@@ -25,11 +29,15 @@ class VehicleCertificate : AppCompatActivity() {
 
     private var isFrontImageTaken = false
     private var isBackImageTaken = false
+    private lateinit var databaseHelper: DatabaseHelper
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_vehicle_certificate)
+
+        // Initialize Database Helper
+        databaseHelper = DatabaseHelper(this)
 
         fImg = findViewById(R.id.regis_front_image)
         bImg = findViewById(R.id.regis_back_image)
@@ -47,6 +55,13 @@ class VehicleCertificate : AppCompatActivity() {
         val nextBtn: Button = findViewById(R.id.next_button)
         nextBtn.setOnClickListener {
             if (isFrontImageTaken && isBackImageTaken) {
+                // Save images to internal storage and database
+                val frontImagePath = saveImageToInternalStorage(fImg)
+                val backImagePath = saveImageToInternalStorage(bImg)
+
+                // Save the image paths to the SQLite database
+                saveImagePathsToDatabase(frontImagePath, backImagePath)
+
                 // Save completion flag and proceed to the next activity
                 val sharedPreferences = getSharedPreferences("VehicleInfoFlags", MODE_PRIVATE)
                 sharedPreferences.edit().putBoolean("vehicleCertificateCompleted", true).apply()
@@ -113,5 +128,26 @@ class VehicleCertificate : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    // Save the image to internal storage and return the file path
+    private fun saveImageToInternalStorage(imageView: ImageView): String {
+        val bitmap = (imageView.drawable as BitmapDrawable).bitmap
+        val file = File(filesDir, "vehicle_certificate_${System.currentTimeMillis()}.png")
+        FileOutputStream(file).use { outputStream ->
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
+        }
+        return file.absolutePath
+    }
+
+    // Save the front and back image paths to the SQLite database
+    private fun saveImagePathsToDatabase(frontImagePath: String, backImagePath: String) {
+        val db = databaseHelper.writableDatabase
+        val values = ContentValues().apply {
+            put(DatabaseHelper.VREGISTER_FRONT_IMAGE_PATH, frontImagePath)
+            put(DatabaseHelper.VREGISTER_BACK_IMAGE_PATH, backImagePath)
+        }
+        db.insert(DatabaseHelper.TABLE_VEHICLE_CERTIFICATE, null, values)
+        db.close()
     }
 }

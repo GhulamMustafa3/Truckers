@@ -78,6 +78,29 @@
 
             android:padding="16dp"
             android:background="#EBEAEA" />
+        <TextView
+            android:id="@+id/Equipmentlimit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Equipment Limits"
+            android:clickable="true"
+            android:textSize="20sp"
+            android:textColor="@color/black"
+            android:layout_marginTop="8dp"
+            android:padding="16dp"
+            android:background="#EBEAEA" />
+        <TextView
+            android:id="@+id/truckroutes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Truck Routes"
+            android:textSize="20sp"
+            android:clickable="true"
+            android:textColor="@color/black"
+            android:layout_marginTop="8dp"
+            android:padding="16dp"
+            android:background="#EBEAEA"
+            />
     </LinearLayout>
 
     <Button

@@ -1,6 +1,7 @@
 package com.example.truckers
 
 import android.app.Activity
+import android.content.ContentValues
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
@@ -11,14 +12,18 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import java.io.File
+import java.io.FileOutputStream
 
 class DriverLisence : AppCompatActivity() {
     private lateinit var lisImg: ImageView
     private lateinit var addLBtn: Button
+    private lateinit var dbHelper: DatabaseHelper
 
     private val REQUEST_IMAGE_CAPTURE_LICENSE = 1
     private val REQUEST_IMAGE_GALLERY_LICENSE = 2
     private var isLicenseImageTaken = false
+    private var licenseImagePath: String? = null // Store the image path or URI
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,6 +33,8 @@ class DriverLisence : AppCompatActivity() {
         lisImg = findViewById(R.id.driving_license_image)
         addLBtn = findViewById(R.id.add_photo_license)
 
+        dbHelper = DatabaseHelper(this)
+
         // Show dialog to choose between Camera or Gallery
         addLBtn.setOnClickListener {
             showImageSourceDialog()
@@ -36,12 +43,22 @@ class DriverLisence : AppCompatActivity() {
         val nextBtn: Button = findViewById(R.id.next_button_license)
         nextBtn.setOnClickListener {
             if (isLicenseImageTaken) {
-                // Save completion flag and proceed to the next activity
-                val sharedPreferences = getSharedPreferences("VehicleInfoFlags", MODE_PRIVATE)
-                sharedPreferences.edit().putBoolean("driverLicenseCompleted", true).apply()
+                // Save the license image path to the database
+                licenseImagePath?.let {
+                    // Assuming driverId is available (you can modify this part as per your app logic)
+                    val driverId = 1 // Example driver ID, update with actual logic
+                    val result = dbHelper.insertDriverLicenseImage(driverId, it)
+                    if (result != -1L) {
+                        // Save completion flag and proceed to the next activity
+                        val sharedPreferences = getSharedPreferences("VehicleInfoFlags", MODE_PRIVATE)
+                        sharedPreferences.edit().putBoolean("driverLicenseCompleted", true).apply()
 
-                val intent = Intent(this, vehicleinfo::class.java)
-                startActivity(intent)
+                        val intent = Intent(this, EquipLimits::class.java)
+                        startActivity(intent)
+                    } else {
+                        Toast.makeText(this, "Failed to save driver's license image", Toast.LENGTH_SHORT).show()
+                    }
+                }
             } else {
                 Toast.makeText(this, "Please take a photo of the driver's license first.", Toast.LENGTH_SHORT).show()
             }
@@ -87,14 +104,31 @@ class DriverLisence : AppCompatActivity() {
                 REQUEST_IMAGE_CAPTURE_LICENSE -> {
                     val imageBitmap = data?.extras?.get("data") as Bitmap
                     lisImg.setImageBitmap(imageBitmap) // Set the captured image to ImageView
+                    // Save the image path to internal storage
+                    licenseImagePath = saveImageToStorage(imageBitmap)
                     isLicenseImageTaken = true
                 }
                 REQUEST_IMAGE_GALLERY_LICENSE -> {
                     val selectedImageUri: Uri? = data?.data
                     lisImg.setImageURI(selectedImageUri) // Set the selected image from gallery to ImageView
+                    licenseImagePath = selectedImageUri.toString() // Save URI as string
                     isLicenseImageTaken = true
                 }
             }
         }
+    }
+
+    // Save the captured image to internal storage and return the file path
+    private fun saveImageToStorage(bitmap: Bitmap): String {
+        // Create a unique filename
+        val filename = "driver_license_${System.currentTimeMillis()}.png"
+        // Create a file in the app's internal storage
+        val file = File(filesDir, filename)
+        // Save the image to the file
+        FileOutputStream(file).use { outputStream ->
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
+        }
+        // Return the absolute path of the saved image
+        return file.absolutePath
     }
 }

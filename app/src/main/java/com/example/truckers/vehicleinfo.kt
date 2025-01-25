@@ -18,8 +18,18 @@ class vehicleinfo : AppCompatActivity() {
         val vphoto: TextView = findViewById(R.id.vehicle_photo)
         val cinfo: TextView = findViewById(R.id.Certificate_info)
         val driverLisence: TextView = findViewById(R.id.DriverLiscence)
+        val equipmentlimit:TextView=findViewById(R.id.Equipmentlimit)
+        val rotes:TextView=findViewById(R.id.truckroutes)
         val btndone: Button = findViewById(R.id.btn_done)
 
+        equipmentlimit.setOnClickListener {
+            val intent = Intent(this, EquipLimits::class.java)
+            startActivity(intent)
+        }
+        rotes.setOnClickListener {
+            val intent = Intent(this, TrucRoutes::class.java)
+            startActivity(intent)
+        }
         register.setOnClickListener {
             val intent = Intent(this, registrationinfo::class.java)
             startActivity(intent)
@@ -56,6 +66,8 @@ class vehicleinfo : AppCompatActivity() {
         val vehiclePhotoCompleted = sharedPreferences.getBoolean("vehiclePhotoCompleted", false)
         val certificateInfoCompleted = sharedPreferences.getBoolean("certificateInfoCompleted", false)
         val driverLicenseCompleted = sharedPreferences.getBoolean("driverLicenseCompleted", false)
+        val equipmentDetailsCompleted=sharedPreferences.getBoolean("equipmentdetailsCompleted",false)
+        val routesdetailsCompleted=sharedPreferences.getBoolean("eqipmentdetails",false)
 
         return registrationInfoCompleted && vehiclePhotoCompleted && certificateInfoCompleted && driverLicenseCompleted
     }

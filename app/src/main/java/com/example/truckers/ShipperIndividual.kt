@@ -1,64 +1,50 @@
 package com.example.truckers
 
-import android.app.Activity
 import android.content.Intent
-import android.content.SharedPreferences
-import android.graphics.Bitmap
-import android.net.Uri
+
 import android.os.Bundle
-import android.provider.MediaStore
-import android.widget.Button
-import android.widget.ImageView
+
+import android.view.View
+
 import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
+
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import com.google.android.material.textfield.TextInputEditText
+
+import com.example.truckers.databinding.ActivityShipperIndividualBinding
+
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
+
 
 class ShipperIndividual : AppCompatActivity() {
 
-    private lateinit var sharedPreferences: SharedPreferences
-    private lateinit var profileImg: ImageView
-    private val REQUEST_IMAGE_CAPTURE = 1
-    private val REQUEST_IMAGE_GALLERY = 2
-    private var isPhotoTaken = false
+    private lateinit var binding: ActivityShipperIndividualBinding
+    private lateinit var database: DatabaseReference // Firebase Database Reference
+    private lateinit var auth: FirebaseAuth
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContentView(R.layout.activity_shipper_individual)
-        sharedPreferences = getSharedPreferences("MyPrefs", MODE_PRIVATE)
+        binding=ActivityShipperIndividualBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        profileImg = findViewById(R.id.Profileimage)
-        val editIcon: ImageView = findViewById(R.id.editIcon)
-        val username: TextInputEditText = findViewById(R.id.username_input)
-        val email: TextInputEditText = findViewById(R.id.email_input)
-        val password: TextInputEditText = findViewById(R.id.pass_input)
-        val phone: TextInputEditText = findViewById(R.id.phone_input)
-        val nextButton: Button = findViewById(R.id.done_button)
-
-        // Set Click Listener for Edit Icon to show Image Source Dialog
-        editIcon.setOnClickListener {
-            showImageSourceDialog()
-        }
+        auth = FirebaseAuth.getInstance()
+        database = FirebaseDatabase.getInstance().reference
 
         // Set Click Listener for Next Button
-        nextButton.setOnClickListener {
-            val usernameText = username.text.toString().trim()
-            val emailText = email.text.toString().trim()
-            val passwordText = password.text.toString().trim()
-            val phoneText = phone.text.toString().trim()
+        binding.doneButton.setOnClickListener {
+            val username = binding.usernameInput.text.toString().trim()
+            val email = binding.emailInput.text.toString().trim()
+            val password = binding.passInput.text.toString().trim()
+            val phone = binding.phoneInput.text.toString().trim()
 
             // Validate Inputs
-            if (validateInputs(usernameText, emailText, passwordText, phoneText)) {
-                // Save completion status in SharedPreferences
-                val editor = sharedPreferences.edit()
-                editor.putBoolean("isBasicInfoComplete", true)
-                editor.apply()
+            if (validateInputs(username, email, password, phone)) {
+                registerUser(username, email, password, phone)
 
-                // Proceed to the next activity
-                val intent = Intent(this, HomeActivity::class.java)
-                startActivity(intent)
+
+
             }
         }
     }
@@ -98,60 +84,51 @@ class ShipperIndividual : AppCompatActivity() {
         }
     }
 
+    // Function to register a user with Firebase Authentication
+    private fun registerUser(username: String, email: String, password: String, phone: String) {
+        // Show progress bar
+        binding.progressBar.visibility = View.VISIBLE
+
+        // Register user with Firebase Authentication
+        auth.createUserWithEmailAndPassword(email, password)
+            .addOnCompleteListener { task ->
+                binding.progressBar.visibility = View.GONE
+                if (task.isSuccessful) {
+                    // Save user details to Realtime Database
+                    saveToFirebase(username, email, phone)
+
+
+                } else {
+                    showToast("Registration failed: ${task.exception?.message}")
+                }
+            }
+    }
+
+    // Function to save user data to Firebase Realtime Database
+    private fun saveToFirebase(username: String, email: String, phone: String) {
+        val userId = auth.currentUser?.uid ?: return
+
+        val user = mapOf(
+            "username" to username,
+            "email" to email,
+            "phone" to phone
+        )
+
+        database.child("users").child(userId).setValue(user)
+            .addOnSuccessListener {
+                showToast("Data saved successfully")
+                val intent = Intent(this, HomeActivity::class.java)
+                startActivity(intent)
+                finish()
+            }
+            .addOnFailureListener { exception ->
+                showToast("Failed to save data: ${exception.message}")
+            }
+    }
+
     // Function to show a Toast message
     private fun showToast(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
-
-    // Show a dialog to let the user choose between Camera and Gallery
-    private fun showImageSourceDialog() {
-        val options = arrayOf("Take a Photo", "Choose from Gallery")
-        val builder = android.app.AlertDialog.Builder(this)
-        builder.setTitle("Select Image Source")
-        builder.setItems(options) { dialog, which ->
-            when (which) {
-                0 -> openCamera() // Camera option
-                1 -> openGallery() // Gallery option
-            }
-        }
-        builder.show()
     }
 
-    // Open the camera to take a photo
-    private fun openCamera() {
-        val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        if (takePictureIntent.resolveActivity(packageManager) != null) {
-            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
-        } else {
-            Toast.makeText(this, "Camera is not available", Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    // Open the gallery to choose an image
-    private fun openGallery() {
-        val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-        galleryIntent.type = "image/*"
-        startActivityForResult(galleryIntent, REQUEST_IMAGE_GALLERY)
-    }
-
-    // Handle the result of the camera or gallery intent
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_OK) {
-            val REQUEST_IMAGE_CAPTURE = null
-            when (requestCode) {
-                REQUEST_IMAGE_CAPTURE -> {
-                    val imageBitmap = data?.extras?.get("data") as Bitmap
-                    profileImg.setImageBitmap(imageBitmap) // Set image from camera
-                    isPhotoTaken = true // Set flag to true when photo is taken
-                }
-                REQUEST_IMAGE_GALLERY -> {
-                    val selectedImageUri: Uri? = data?.data
-                    profileImg.setImageURI(selectedImageUri) // Set image from gallery
-                    isPhotoTaken = true // Set flag to true when photo is selected from gallery
-                }
-            }
-        }
-    }
-
-    }

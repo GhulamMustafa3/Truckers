@@ -1,8 +1,8 @@
 package com.example.truckers
 
 import android.app.Activity
+import android.content.ContentValues
 import android.content.Intent
-import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
@@ -12,14 +12,17 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AlertDialog
+import java.io.File
+import java.io.FileOutputStream
 
 class CNIC : AppCompatActivity() {
 
-    private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var databaseHelper: DatabaseHelper
     private lateinit var cnicFrontImage: ImageView
     private lateinit var cnicBackImage: ImageView
-    private var isFrontImageSelected = false
-    private var isBackImageSelected = false
+    private var frontImagePath: String? = null
+    private var backImagePath: String? = null
 
     private val REQUEST_IMAGE_CAPTURE_FRONT = 1
     private val REQUEST_IMAGE_CAPTURE_BACK = 2
@@ -30,8 +33,8 @@ class CNIC : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_cnic)
 
-        // Initialize SharedPreferences
-        sharedPreferences = getSharedPreferences("DriverRegistrationPrefs", MODE_PRIVATE)
+        // Initialize Database Helper
+        databaseHelper = DatabaseHelper(this)
 
         // Initialize Views
         cnicFrontImage = findViewById(R.id.cnic_front_image)
@@ -56,13 +59,11 @@ class CNIC : AppCompatActivity() {
             val cnicNumber = cnicNumberInput.text.toString().trim()
 
             if (validateInputs(cnicNumber)) {
-                // Save completion status in SharedPreferences
-                val editor = sharedPreferences.edit()
-                editor.putBoolean("isCnicInfoComplete", true)
-                editor.apply()
+                saveToDatabase(cnicNumber, frontImagePath!!, backImagePath!!)
+                showToast("Data saved successfully")
 
                 // Proceed to the next activity
-                val intent = Intent(this, vehicleinfo::class.java)
+                val intent = Intent(this, vehicleinfo::class.java) // Ensure VehicleInfo exists
                 startActivity(intent)
             }
         }
@@ -79,11 +80,11 @@ class CNIC : AppCompatActivity() {
                 showToast("CNIC number must be 13 digits")
                 false
             }
-            !isFrontImageSelected -> {
+            frontImagePath == null -> {
                 showToast("Please add the front image of CNIC")
                 false
             }
-            !isBackImageSelected -> {
+            backImagePath == null -> {
                 showToast("Please add the back image of CNIC")
                 false
             }
@@ -91,35 +92,25 @@ class CNIC : AppCompatActivity() {
         }
     }
 
-    // Function to show a dialog to choose between Camera and Gallery
-    private fun showImageSourceDialog(cameraRequestCode: Int, galleryRequestCode: Int) {
-        val options = arrayOf("Take a Photo", "Choose from Gallery")
-        val builder = android.app.AlertDialog.Builder(this)
-        builder.setTitle("Select Image Source")
-        builder.setItems(options) { dialog, which ->
-            when (which) {
-                0 -> openCamera(cameraRequestCode) // Camera option
-                1 -> openGallery(galleryRequestCode) // Gallery option
-            }
+    // Function to save data to SQLite database
+    private fun saveToDatabase(cnicNumber: String, frontImage: String, backImage: String) {
+        val db = databaseHelper.writableDatabase
+        val values = ContentValues().apply {
+            put(DatabaseHelper.COLUMN_CNIC_NUMBER, cnicNumber)
+            put(DatabaseHelper.CNIC_FRONT_IMAGE_PATH, frontImage)
+            put(DatabaseHelper.CNIC_BACK_IMAGE_PATH, backImage)
         }
-        builder.show()
+        db.insert(DatabaseHelper.TABLE_CNIC, null, values)
+        db.close()
     }
 
-    // Open the camera to take a photo
-    private fun openCamera(requestCode: Int) {
-        val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        if (takePictureIntent.resolveActivity(packageManager) != null) {
-            startActivityForResult(takePictureIntent, requestCode)
-        } else {
-            Toast.makeText(this, "Camera is not available", Toast.LENGTH_SHORT).show()
+    // Function to save a bitmap to internal storage and return the file path
+    private fun saveBitmapToInternalStorage(bitmap: Bitmap, filename: String): String {
+        val file = File(filesDir, filename)
+        FileOutputStream(file).use { outputStream ->
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
         }
-    }
-
-    // Open the gallery to choose an image
-    private fun openGallery(requestCode: Int) {
-        val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-        galleryIntent.type = "image/*"
-        startActivityForResult(galleryIntent, requestCode)
+        return file.absolutePath
     }
 
     // Handle the result of the camera or gallery intent
@@ -130,23 +121,23 @@ class CNIC : AppCompatActivity() {
             when (requestCode) {
                 REQUEST_IMAGE_CAPTURE_FRONT -> {
                     val imageBitmap = data?.extras?.get("data") as Bitmap
-                    cnicFrontImage.setImageBitmap(imageBitmap) // Set front image
-                    isFrontImageSelected = true
+                    frontImagePath = saveBitmapToInternalStorage(imageBitmap, "front_cnic.png")
+                    cnicFrontImage.setImageBitmap(imageBitmap)
                 }
                 REQUEST_IMAGE_CAPTURE_BACK -> {
                     val imageBitmap = data?.extras?.get("data") as Bitmap
-                    cnicBackImage.setImageBitmap(imageBitmap) // Set back image
-                    isBackImageSelected = true
+                    backImagePath = saveBitmapToInternalStorage(imageBitmap, "back_cnic.png")
+                    cnicBackImage.setImageBitmap(imageBitmap)
                 }
                 REQUEST_IMAGE_GALLERY_FRONT -> {
                     val selectedImageUri: Uri? = data?.data
-                    cnicFrontImage.setImageURI(selectedImageUri) // Set front image from gallery
-                    isFrontImageSelected = true
+                    frontImagePath = selectedImageUri?.path
+                    cnicFrontImage.setImageURI(selectedImageUri)
                 }
                 REQUEST_IMAGE_GALLERY_BACK -> {
                     val selectedImageUri: Uri? = data?.data
-                    cnicBackImage.setImageURI(selectedImageUri) // Set back image from gallery
-                    isBackImageSelected = true
+                    backImagePath = selectedImageUri?.path
+                    cnicBackImage.setImageURI(selectedImageUri)
                 }
             }
         }
@@ -155,5 +146,25 @@ class CNIC : AppCompatActivity() {
     // Function to show a Toast message
     private fun showToast(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+    }
+
+    // Function to show the image source dialog
+    private fun showImageSourceDialog(requestCodeCapture: Int, requestCodeGallery: Int) {
+        val options = arrayOf("Take Photo", "Choose from Gallery")
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Select Image Source")
+        builder.setItems(options) { dialog, which ->
+            when (which) {
+                0 -> {
+                    val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+                    startActivityForResult(cameraIntent, requestCodeCapture)
+                }
+                1 -> {
+                    val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+                    startActivityForResult(galleryIntent, requestCodeGallery)
+                }
+            }
+        }
+        builder.show()
     }
 }

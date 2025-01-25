@@ -1,59 +1,99 @@
 package com.example.truckers
 
+import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.fragment.app.Fragment
+import com.example.truckers.databinding.FragmentProfileBinding
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [Profile.newInstance] factory method to
- * create an instance of this fragment.
- */
 class Profile : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    private var _binding: FragmentProfileBinding? = null
+    private val binding get() = _binding!!
+    private lateinit var auth: FirebaseAuth
+    private lateinit var database: DatabaseReference
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_profile, container, false)
+        // Inflate the layout using view binding
+        _binding = FragmentProfileBinding.inflate(inflater, container, false)
+        val root: View = binding.root
+
+        // Initialize FirebaseAuth and DatabaseReference
+        auth = FirebaseAuth.getInstance()
+        database = FirebaseDatabase.getInstance().reference
+
+        // Fetch user data from Firebase
+        fetchUserData()
+
+        // Set up the Sign Out button click listener
+        binding.signout.setOnClickListener {
+            // Sign out the user and redirect to the login activity
+            auth.signOut()
+            val intent = Intent(requireContext(), Login::class.java)
+            startActivity(intent)
+            requireActivity().finish() // Close the current activity to prevent back navigation
+        }
+
+        // Example of setting up a click listener for the Switch Profile button
+        binding.ShipperBroker.setOnClickListener {
+            // Handle switching profile action
+            Toast.makeText(requireContext(), "Switching Profile...", Toast.LENGTH_SHORT).show()
+        }
+
+        return root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment Profile.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            Profile().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+    private fun fetchUserData() {
+        // Get the current user's UID
+        val userId = auth.currentUser?.uid
+
+        if (userId != null) {
+            // Reference to the user's data in Firebase Realtime Database
+            val userRef = database.child("users").child(userId)
+
+            // Fetch the user data
+            userRef.addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    // Check if data exists
+                    if (snapshot.exists()) {
+
+
+                        val email = snapshot.child("email").value.toString()
+                        val phone = snapshot.child("phone").value.toString()
+
+                        // Set the retrieved data into the UI elements
+
+                        binding.email.text = email
+                        binding.phone.text = phone
+                    } else {
+                        Toast.makeText(requireContext(), "User data not found", Toast.LENGTH_SHORT).show()
+                    }
                 }
-            }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Toast.makeText(requireContext(), "Failed to load user data: ${error.message}", Toast.LENGTH_SHORT).show()
+                }
+            })
+        } else {
+            Toast.makeText(requireContext(), "No user is logged in", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        // Clean up the binding to avoid memory leaks
+        _binding = null
     }
 }

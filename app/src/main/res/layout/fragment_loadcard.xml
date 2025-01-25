@@ -8,7 +8,8 @@
     android:padding="10dp"
     android:gravity="center"
     android:background="#FFFFFF"
-    tools:context=".loadCard">
+    tools:context=".loadcard">
+
     <androidx.cardview.widget.CardView
         android:layout_width="370dp"
         android:layout_height="200dp"
@@ -191,7 +192,5 @@
             </LinearLayout>
         </RelativeLayout>
     </androidx.cardview.widget.CardView>
-
-
 
 </LinearLayout>

@@ -1,55 +1,52 @@
 package com.example.truckers
 
+import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class mytruck : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_mytruck, container, false)
+        val view = inflater.inflate(R.layout.fragment_mytruck, container, false)
+
+        val recyclerView: RecyclerView = view.findViewById(R.id.truck_recycler_view)
+        val noLoadsImage: View = view.findViewById(R.id.no_loads_image)
+        val noLoadsText: View = view.findViewById(R.id.no_loads_text)
+        val addTruckButton: FloatingActionButton = view.findViewById(R.id.add_truck)
+
+        // Setup RecyclerView or show "No Trucks" message
+        val trucks = getTrucks() // Replace with your data source logic
+        if (trucks.isEmpty()) {
+            recyclerView.visibility = View.GONE
+            noLoadsImage.visibility = View.VISIBLE
+            noLoadsText.visibility = View.VISIBLE
+        } else {
+            recyclerView.visibility = View.VISIBLE
+            noLoadsImage.visibility = View.GONE
+            noLoadsText.visibility = View.GONE
+            // Setup RecyclerView adapter here
+        }
+
+        // Handle FloatingActionButton click
+        addTruckButton.setOnClickListener {
+            val intent = Intent(requireContext(), vehicleinfo::class.java)
+            startActivity(intent)
+        }
+
+        return view
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment mytruck.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            mytruck().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+    private fun getTrucks(): List<String> {
+        // Replace with your logic to fetch trucks
+        return emptyList()
     }
 }
