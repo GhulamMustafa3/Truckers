@@ -41,8 +41,7 @@ class registrationinfo : AppCompatActivity() {
                 savePlateNumberToFirebase(plateNumber)
 
                 // Navigate to the next activity
-                val intent = Intent(this, vehiclephoto::class.java)
-                startActivity(intent)
+
             } else {
                 plateNo.error = "Please enter the plate number"
             }
@@ -60,6 +59,8 @@ class registrationinfo : AppCompatActivity() {
             .addOnSuccessListener {
                 // Successfully saved to Firebase
                 showToast("Plate number saved successfully")
+                val intent = Intent(this, vehiclephoto::class.java)
+                startActivity(intent)
             }
             .addOnFailureListener {
                 // Failed to save to Firebase

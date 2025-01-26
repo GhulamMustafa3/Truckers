@@ -85,16 +85,16 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
     }
 
     // Insert method for Driver License
-    fun insertDriverLicenseImage(driverId: Int, licenseImagePath: String): Long {
+    fun insertDriverLicenseImage(licenseImagePath: String): Long {
         val db = writableDatabase
         val values = ContentValues().apply {
-            put(COLUMN_DRIVER_ID, driverId)
             put(COLUMN_LICENSE_IMAGE_PATH, licenseImagePath)
         }
         val result = db.insert(TABLE_DRIVER_LICENSE, null, values)
         db.close()
         return result
     }
+
 
     // Insert method for Vehicle Certificate
     fun insertVehicleCertificate(frontImagePath: String, backImagePath: String): Long {

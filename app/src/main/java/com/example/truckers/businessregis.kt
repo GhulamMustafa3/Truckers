@@ -33,6 +33,7 @@ class businessregis : AppCompatActivity() {
 
         auth = FirebaseAuth.getInstance()
         database = FirebaseDatabase.getInstance().reference
+
         // Set Click Listener for Next Button
        binding.nextButton.setOnClickListener {
            val company=binding.companynameInput.text.toString().trim()

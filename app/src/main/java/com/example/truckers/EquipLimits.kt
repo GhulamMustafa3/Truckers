@@ -3,9 +3,10 @@ package com.example.truckers
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.Button
+import android.widget.ProgressBar
 import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.database.DatabaseReference
@@ -13,10 +14,10 @@ import com.google.firebase.database.FirebaseDatabase
 
 class EquipLimits : AppCompatActivity() {
     private lateinit var database: DatabaseReference
+    private lateinit var progressBar: ProgressBar
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         setContentView(R.layout.activity_equip_limits)
 
         // Initialize Firebase Database
@@ -28,12 +29,18 @@ class EquipLimits : AppCompatActivity() {
         val limits: TextInputEditText = findViewById(R.id.limits_input)
         val type: TextInputEditText = findViewById(R.id.Ttype_input)
 
+        // ProgressBar
+        progressBar = findViewById(R.id.progress_bar)
+
         // Button
         val btn: Button = findViewById(R.id.next_button)
 
         btn.setOnClickListener {
             // Validate inputs
             if (validateInputs(length, weight, limits, type)) {
+                // Show progress bar
+                progressBar.visibility = View.VISIBLE
+
                 // Save data to Firebase
                 val equipmentDetails = EquipmentDetails(
                     length = length.text.toString().trim(),
@@ -43,14 +50,6 @@ class EquipLimits : AppCompatActivity() {
                 )
 
                 saveEquipmentDetailsToFirebase(equipmentDetails)
-
-                // Save completion status in SharedPreferences
-                val sharedPreferences = getSharedPreferences("VehicleInfoFlags", Context.MODE_PRIVATE)
-                sharedPreferences.edit().putBoolean("equipmentDetailsCompleted", true).apply()
-
-                // Proceed to the next activity
-                val intent = Intent(this, TrucRoutes::class.java)
-                startActivity(intent)
             } else {
                 Toast.makeText(this, "Please fill all fields correctly.", Toast.LENGTH_SHORT).show()
             }
@@ -65,11 +64,30 @@ class EquipLimits : AppCompatActivity() {
         if (equipmentId != null) {
             database.child("equipmentDetails").child(equipmentId).setValue(details)
                 .addOnSuccessListener {
+                    // Hide progress bar
+                    progressBar.visibility = View.GONE
+
                     Toast.makeText(this, "Equipment details saved successfully!", Toast.LENGTH_SHORT).show()
+
+                    // Save completion status in SharedPreferences
+                    val sharedPreferences = getSharedPreferences("VehicleInfoFlags", Context.MODE_PRIVATE)
+                    sharedPreferences.edit().putBoolean("equipmentDetailsCompleted", true).apply()
+
+                    // Proceed to the next activity
+                    val intent = Intent(this, TrucRoutes::class.java)
+                    startActivity(intent)
                 }
                 .addOnFailureListener {
+                    // Hide progress bar
+                    progressBar.visibility = View.GONE
+
                     Toast.makeText(this, "Failed to save equipment details: ${it.message}", Toast.LENGTH_SHORT).show()
                 }
+        } else {
+            // Hide progress bar
+            progressBar.visibility = View.GONE
+
+            Toast.makeText(this, "Error generating equipment ID. Please try again.", Toast.LENGTH_SHORT).show()
         }
     }
 

@@ -17,6 +17,7 @@
         android:hint="Length"
         app:boxBackgroundColor="@color/white"
         app:boxBackgroundMode="outline"
+        app:prefixText="Feet"
 
         app:boxStrokeColor="#0E0E0F"
         app:boxStrokeWidth="1dp"
@@ -51,6 +52,7 @@
 
         app:endIconMode="clear_text"
         app:helperText="Required"
+        app:prefixText="KG"
         app:helperTextTextColor="@color/red"
         >
 
@@ -114,9 +116,16 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:inputType="textPersonName"
-            android:drawableEnd="@drawable/baseline_arrow_forward_ios_24"
             android:padding="12dp" />
     </com.google.android.material.textfield.TextInputLayout>
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_gravity="center"
+        android:indeterminate="true"
+        style="?android:attr/progressBarStyleLarge" />
     <Button
         android:id="@+id/next_button"
         android:layout_width="wrap_content"

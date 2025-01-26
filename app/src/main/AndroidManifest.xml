@@ -16,7 +16,8 @@
 
         <package android:name="com.google.android.apps.maps" />
     </queries>
-
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <application
         android:name=".MyApplication"
         android:allowBackup="true"
@@ -28,6 +29,13 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Truckers"
         tools:targetApi="31">
+
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+        <meta-data
+            android:name="com.google.android.maps.v2.API_KEY"
+            android:value="googlemaps" />
         <activity
             android:name=".forgotpass"
             android:exported="false" />

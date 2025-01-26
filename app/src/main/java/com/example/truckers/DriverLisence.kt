@@ -45,9 +45,8 @@ class DriverLisence : AppCompatActivity() {
             if (isLicenseImageTaken) {
                 // Save the license image path to the database
                 licenseImagePath?.let {
-                    // Assuming driverId is available (you can modify this part as per your app logic)
-                    val driverId = 1 // Example driver ID, update with actual logic
-                    val result = dbHelper.insertDriverLicenseImage(driverId, it)
+
+                    val result = dbHelper.insertDriverLicenseImage(licenseImagePath!!)
                     if (result != -1L) {
                         // Save completion flag and proceed to the next activity
                         val sharedPreferences = getSharedPreferences("VehicleInfoFlags", MODE_PRIVATE)

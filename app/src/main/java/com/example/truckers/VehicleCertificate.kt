@@ -64,7 +64,7 @@ class VehicleCertificate : AppCompatActivity() {
 
                 // Save completion flag and proceed to the next activity
                 val sharedPreferences = getSharedPreferences("VehicleInfoFlags", MODE_PRIVATE)
-                sharedPreferences.edit().putBoolean("vehicleCertificateCompleted", true).apply()
+                sharedPreferences.edit().putBoolean("certificateInfoCompleted", true).apply()
 
                 val intent = Intent(this, DriverLisence::class.java)
                 startActivity(intent)

@@ -64,6 +64,14 @@
             android:padding="16dp"
             android:background="#EBEAEA" />
     </LinearLayout>
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        android:indeterminate="true"
+        style="?android:attr/progressBarStyleLarge" />
 
     <Button
         android:id="@+id/btn_done"

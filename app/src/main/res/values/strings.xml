@@ -2,4 +2,6 @@
     <string name="app_name">Truckers</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="googlemaps">AIzaSyA46nJ4vn1KK6ziJclb63qoDnNOE2kf1wc</string>
+    <string name="google_play_services_version">214015000</string>
 </resources>

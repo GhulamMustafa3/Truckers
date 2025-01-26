@@ -43,9 +43,7 @@ class BasicInfo : AppCompatActivity() {
             if (validateInputs(username, email, password, phone)) {
                 registerUser(username, email, password, phone)
                 // Save completion status in SharedPreferences
-                val editor = sharedPreferences.edit()
-                editor.putBoolean("isBasicInfoComplete", true)
-                editor.apply()
+
 
 
 
@@ -128,6 +126,9 @@ class BasicInfo : AppCompatActivity() {
         database.child("users").child(userId).setValue(user)
             .addOnSuccessListener {
                 showToast("Data saved successfully")
+                val editor = sharedPreferences.edit()
+                editor.putBoolean("isBasicInfoComplete", true)
+                editor.apply()
                 val intent = Intent(this, CNIC::class.java)
                 startActivity(intent)
             }

@@ -3,6 +3,7 @@ package com.example.truckers
 import android.app.Activity
 import android.content.ContentValues
 import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
@@ -28,14 +29,14 @@ class CNIC : AppCompatActivity() {
     private val REQUEST_IMAGE_CAPTURE_BACK = 2
     private val REQUEST_IMAGE_GALLERY_FRONT = 3
     private val REQUEST_IMAGE_GALLERY_BACK = 4
-
+    private lateinit var sharedPreferences: SharedPreferences
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_cnic)
 
         // Initialize Database Helper
         databaseHelper = DatabaseHelper(this)
-
+        sharedPreferences = getSharedPreferences("DriverRegistrationPrefs", MODE_PRIVATE)
         // Initialize Views
         cnicFrontImage = findViewById(R.id.cnic_front_image)
         cnicBackImage = findViewById(R.id.cnic_back_image)
@@ -60,6 +61,9 @@ class CNIC : AppCompatActivity() {
 
             if (validateInputs(cnicNumber)) {
                 saveToDatabase(cnicNumber, frontImagePath!!, backImagePath!!)
+                val editor = sharedPreferences.edit()
+                editor.putBoolean("isCnicInfoComplete", true)
+                editor.apply()
                 showToast("Data saved successfully")
 
                 // Proceed to the next activity

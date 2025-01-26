@@ -21,9 +21,11 @@ class Login : AppCompatActivity() {
         // Initialize Firebase Authentication
         auth = FirebaseAuth.getInstance()
 
-        // Check if the user is already logged in
         if (auth.currentUser != null) {
-            navigateToMainActivity()
+            // Redirect to HomeActivity
+            val intent = Intent(this, HomeActivity::class.java)
+            startActivity(intent)
+            finish() // Close the current activity
         }
 
         // Handle Login button click
@@ -47,6 +49,10 @@ class Login : AppCompatActivity() {
             val intent = Intent(this, forgotpass::class.java)
             startActivity(intent)
         }
+        binding.signup.setOnClickListener{
+            val intent=Intent(this,MainActivity::class.java)
+            startActivity(intent)
+        }
     }
 
     private fun loginUser(email: String, password: String) {
@@ -68,9 +74,5 @@ class Login : AppCompatActivity() {
             }
     }
 
-    private fun navigateToMainActivity() {
-        val intent = Intent(this, MainActivity::class.java)
-        startActivity(intent)
-        finish() // Close the Login activity
-    }
+
 }
