@@ -5,11 +5,24 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.firebase.database.*
 
 class mytruck : Fragment() {
+
+    private lateinit var database: DatabaseReference
+
+    private lateinit var  recyclerView: RecyclerView
+    private lateinit var noLoadsImage: ImageView
+    private lateinit var noLoadsText: TextView
+
+    private val truckList = arrayListOf<truckdata>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -18,35 +31,69 @@ class mytruck : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_mytruck, container, false)
 
-        val recyclerView: RecyclerView = view.findViewById(R.id.truck_recycler_view)
-        val noLoadsImage: View = view.findViewById(R.id.no_loads_image)
-        val noLoadsText: View = view.findViewById(R.id.no_loads_text)
-        val addTruckButton: FloatingActionButton = view.findViewById(R.id.add_truck)
+         recyclerView = view.findViewById(R.id.truck_recycler_view)
 
-        // Setup RecyclerView or show "No Trucks" message
-        val trucks = getTrucks() // Replace with your data source logic
-        if (trucks.isEmpty()) {
-            recyclerView.visibility = View.GONE
-            noLoadsImage.visibility = View.VISIBLE
-            noLoadsText.visibility = View.VISIBLE
-        } else {
-            recyclerView.visibility = View.VISIBLE
-            noLoadsImage.visibility = View.GONE
-            noLoadsText.visibility = View.GONE
-            // Setup RecyclerView adapter here
-        }
+        val addTruckButton: FloatingActionButton = view.findViewById(R.id.add_truck)
+        noLoadsImage = view.findViewById(R.id.no_loads_image)
+        noLoadsText = view.findViewById(R.id.no_loads_text)
+        // Initialize Firebase Database
+
+
+        // Setup RecyclerView
+
+
+
 
         // Handle FloatingActionButton click
         addTruckButton.setOnClickListener {
-            val intent = Intent(requireContext(), vehicleinfo::class.java)
-            startActivity(intent)
+            openTruckDetailsFragment()
         }
+
 
         return view
     }
 
-    private fun getTrucks(): List<String> {
-        // Replace with your logic to fetch trucks
-        return emptyList()
+
+    private fun openTruckDetailsFragment() {
+        val truckDetailsFragment = truckdetails()
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.container, truckDetailsFragment) // Ensure this ID matches your container
+            .addToBackStack(null) // Adds the transaction to the back stack for navigation
+            .commit()
     }
+
+
+    private fun loaddata(){
+        database=FirebaseDatabase.getInstance().getReference("TruckRoutes")
+   database.addValueEventListener(object :ValueEventListener{
+       override fun onDataChange(snapshot: DataSnapshot) {
+           if(snapshot.exists()){
+               for(trucksnap in snapshot.children){
+                   val truckdetail=trucksnap.getValue(truckdata::class.java)
+                    truckList.add(truckdetail!!)
+               }
+
+           }
+           // Update visibility based on data availability
+           if (truckList.isNotEmpty()) {
+               recyclerView.visibility = View.VISIBLE
+               noLoadsImage.visibility = View.GONE
+               noLoadsText.visibility = View.GONE
+           } else {
+               recyclerView.visibility = View.GONE
+               noLoadsImage.visibility = View.VISIBLE
+               noLoadsText.visibility = View.VISIBLE
+           }
+
+
+       }
+
+       override fun onCancelled(error: DatabaseError) {
+
+       }
+   })
+
+    }
+
+
 }

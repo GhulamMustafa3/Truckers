@@ -26,7 +26,7 @@ class IndividualDriverRegis : AppCompatActivity() {
 
         val Basicinfo: TextView = findViewById(R.id.basic_info)
         val Cnic: TextView = findViewById(R.id.cnic_info)
-        val vehiclinfo: TextView = findViewById(R.id.vehicle_info)
+        val driverlisence: TextView = findViewById(R.id.driverLisence)
         val btndone: Button = findViewById(R.id.btn_done)
 
         Basicinfo.setOnClickListener {
@@ -39,8 +39,8 @@ class IndividualDriverRegis : AppCompatActivity() {
             startActivity(intent)
         }
 
-        vehiclinfo.setOnClickListener {
-            val intent = Intent(this, vehicleinfo::class.java)
+        driverlisence.setOnClickListener {
+            val intent = Intent(this, DriverLisence::class.java)
             startActivity(intent)
         }
 
@@ -66,6 +66,6 @@ class IndividualDriverRegis : AppCompatActivity() {
     private fun isAllInfoComplete(): Boolean {
         return sharedPreferences.getBoolean("isBasicInfoComplete", false) &&
                 sharedPreferences.getBoolean("isCnicInfoComplete", false) &&
-                sharedPreferences.getBoolean("isVehicleInfoComplete", false)
+                sharedPreferences.getBoolean("isLisenceInfoComplete", false)
     }
 }

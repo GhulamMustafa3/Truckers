@@ -1,59 +1,109 @@
 package com.example.truckers
 
+import android.content.Context.MODE_PRIVATE
+import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.ProgressBar
+import android.widget.TextView
+import android.widget.Toast
+import androidx.fragment.app.FragmentTransaction
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [truckdetails.newInstance] factory method to
- * create an instance of this fragment.
- */
 class truckdetails : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    private lateinit var progressBar: ProgressBar
+    private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var register: TextView
+    private lateinit var vphoto: TextView
+    private lateinit var cinfo: TextView
+    private lateinit var equipmentLimit: TextView
+    private lateinit var routes: TextView
+    private lateinit var btnDone: Button
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_truckdetails, container, false)
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment truckdetails.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            truckdetails().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        // Initialize views
+        progressBar = view.findViewById(R.id.progress_bar)
+        register = view.findViewById(R.id.Register_info)
+        vphoto = view.findViewById(R.id.vehicle_photo)
+        cinfo = view.findViewById(R.id.Certificate_info)
+        equipmentLimit = view.findViewById(R.id.Equipmentlimit)
+        routes = view.findViewById(R.id.truckroutes)
+        btnDone = view.findViewById(R.id.btn_done)
+
+        // Initialize SharedPreferences
+        sharedPreferences = requireContext().getSharedPreferences("DriverRegistrationPrefs", MODE_PRIVATE)
+
+        // Replace Intent with FragmentTransaction
+
+        register.setOnClickListener {
+            navigateToFragment(registration())
+        }
+        vphoto.setOnClickListener {
+            navigateToFragment(vehicleimage())
+        }
+        cinfo.setOnClickListener {
+            navigateToFragment(vehicleregisterpic())
+        }
+        equipmentLimit.setOnClickListener {
+            navigateToFragment(equipmentlimits())
+        }
+        routes.setOnClickListener {
+            navigateToFragment(truckroutes())
+        }
+        btnDone.setOnClickListener {
+            // Show the progress bar when checking fields
+            progressBar.visibility = View.VISIBLE
+
+            if (areFieldsCompleted()) {
+                // Hide the progress bar and navigate to the next fragment
+                progressBar.visibility = View.GONE
+
+                val editor = sharedPreferences.edit()
+                editor.putBoolean("isVehicleInfoComplete", true)
+                editor.apply()
+
+                navigateToFragment(mytruck())
+            } else {
+                // Hide the progress bar and show an error message
+                progressBar.visibility = View.GONE
+                Toast.makeText(
+                    requireContext(),
+                    "Please complete all required fields before proceeding.",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
+        }
+    }
+
+    private fun areFieldsCompleted(): Boolean {
+        val sharedPreferences = requireContext().getSharedPreferences("VehicleInfoFlags", MODE_PRIVATE)
+        val registrationInfoCompleted = sharedPreferences.getBoolean("registrationInfoCompleted", false)
+        val vehiclePhotoCompleted = sharedPreferences.getBoolean("vehiclePhotoCompleted", false)
+        val certificateInfoCompleted = sharedPreferences.getBoolean("certificateInfoCompleted", false)
+        val equipmentDetailsComplete = sharedPreferences.getBoolean("equipmentDetailsComplete", false)
+        val routesDetailsComplete = sharedPreferences.getBoolean("routesdetailsComplete", false)
+
+        return registrationInfoCompleted && vehiclePhotoCompleted && certificateInfoCompleted &&
+                equipmentDetailsComplete && routesDetailsComplete
+    }
+
+    private fun navigateToFragment(fragment: Fragment) {
+        val transaction: FragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
+        transaction.replace(R.id.container, fragment)
+        transaction.addToBackStack(null) // Adds the transaction to the back stack
+        transaction.commit()
     }
 }

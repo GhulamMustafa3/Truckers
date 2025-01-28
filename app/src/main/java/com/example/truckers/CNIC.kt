@@ -67,7 +67,7 @@ class CNIC : AppCompatActivity() {
                 showToast("Data saved successfully")
 
                 // Proceed to the next activity
-                val intent = Intent(this, vehicleinfo::class.java) // Ensure VehicleInfo exists
+                val intent = Intent(this,DriverLisence::class.java) // Ensure VehicleInfo exists
                 startActivity(intent)
             }
         }
@@ -170,5 +170,42 @@ class CNIC : AppCompatActivity() {
             }
         }
         builder.show()
+    }
+
+    private fun loadSavedImages() {
+        val db = databaseHelper.readableDatabase
+        val cursor = db.query(
+            DatabaseHelper.TABLE_CNIC,
+            arrayOf(DatabaseHelper.CNIC_FRONT_IMAGE_PATH, DatabaseHelper.CNIC_BACK_IMAGE_PATH),
+            null,
+            null,
+            null,
+            null,
+            null
+        )
+
+        if (cursor != null && cursor.moveToFirst()) {
+            val frontImageColumnIndex = cursor.getColumnIndex(DatabaseHelper.CNIC_FRONT_IMAGE_PATH)
+            val backImageColumnIndex = cursor.getColumnIndex(DatabaseHelper.CNIC_BACK_IMAGE_PATH)
+
+            // Check if the column index is valid (>= 0)
+            if (frontImageColumnIndex >= 0) {
+                val frontImagePath = cursor.getString(frontImageColumnIndex)
+                if (frontImagePath.isNotEmpty()) {
+                    cnicFrontImage.setImageURI(Uri.parse(frontImagePath)) // Load front image
+                }
+            }
+
+            if (backImageColumnIndex >= 0) {
+                val backImagePath = cursor.getString(backImageColumnIndex)
+                if (backImagePath.isNotEmpty()) {
+                    cnicBackImage.setImageURI(Uri.parse(backImagePath)) // Load back image
+                }
+            }
+        }
+
+
+        cursor?.close()
+        db.close()
     }
 }

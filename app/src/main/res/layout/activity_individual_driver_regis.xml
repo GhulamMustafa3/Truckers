@@ -53,10 +53,10 @@
             android:layout_marginBottom="8dp" />
 
         <TextView
-            android:id="@+id/vehicle_info"
+            android:id="@+id/driverLisence"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Vehicle Info"
+            android:text="Driver Lisence"
             android:clickable="true"
             android:textSize="20sp"
             android:textColor="@color/black"

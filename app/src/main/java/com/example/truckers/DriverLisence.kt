@@ -49,10 +49,10 @@ class DriverLisence : AppCompatActivity() {
                     val result = dbHelper.insertDriverLicenseImage(licenseImagePath!!)
                     if (result != -1L) {
                         // Save completion flag and proceed to the next activity
-                        val sharedPreferences = getSharedPreferences("VehicleInfoFlags", MODE_PRIVATE)
-                        sharedPreferences.edit().putBoolean("driverLicenseCompleted", true).apply()
+                        val sharedPreferences = getSharedPreferences("DriverRegistrationPrefs", MODE_PRIVATE)
+                        sharedPreferences.edit().putBoolean("isLisenceInfoComplete", true).apply()
 
-                        val intent = Intent(this, EquipLimits::class.java)
+                        val intent = Intent(this, IndividualDriverRegis::class.java)
                         startActivity(intent)
                     } else {
                         Toast.makeText(this, "Failed to save driver's license image", Toast.LENGTH_SHORT).show()
@@ -129,5 +129,28 @@ class DriverLisence : AppCompatActivity() {
         }
         // Return the absolute path of the saved image
         return file.absolutePath
+    }
+    private fun getSavedImagePath(): String? {
+        val db = dbHelper.readableDatabase
+        val cursor = db.query(
+            DatabaseHelper.TABLE_DRIVER_LICENSE,
+            arrayOf(DatabaseHelper.COLUMN_LICENSE_IMAGE_PATH),
+            null,
+            null,
+            null,
+            null,
+            null
+        )
+
+        var imagePath: String? = null
+        if (cursor != null && cursor.moveToFirst()) {
+            val columnIndex = cursor.getColumnIndex(DatabaseHelper.COLUMN_LICENSE_IMAGE_PATH)
+            if (columnIndex >= 0) {
+                imagePath = cursor.getString(columnIndex)
+            }
+        }
+        cursor?.close()
+        db.close()
+        return imagePath
     }
 }

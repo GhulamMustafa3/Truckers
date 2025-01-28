@@ -102,7 +102,7 @@
         android:layout_gravity="center"
         android:backgroundTint="@color/black"
         android:textColor="@color/white"
-        android:background="@drawable/rectangleshape"
+
         android:id="@+id/login"/>
 
 </LinearLayout>

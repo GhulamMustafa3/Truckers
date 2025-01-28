@@ -1,32 +1,29 @@
 package com.example.truckers
 
+import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.EditText
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity.MODE_PRIVATE
+import androidx.fragment.app.FragmentTransaction
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [registration.newInstance] factory method to
- * create an instance of this fragment.
- */
 class registration : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+    private lateinit var plateNo: EditText
+    private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var database: DatabaseReference
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
+
     }
 
     override fun onCreateView(
@@ -36,24 +33,62 @@ class registration : Fragment() {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_registration, container, false)
     }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment registration.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            registration().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
+        sharedPreferences =  requireContext().getSharedPreferences("VehicleInfoFlags", MODE_PRIVATE)
+
+        // Initialize Firebase Database reference
+        database = FirebaseDatabase.getInstance().getReference("VehicleInfo")
+
+        plateNo = view.findViewById(R.id.registration_plate_input)
+        val nextBtn: Button = view.findViewById(R.id.next_button)
+
+        nextBtn.setOnClickListener {
+            val plateNumber = plateNo.text.toString().trim()
+
+            if (plateNumber.isNotEmpty()) {
+                // Set the flag for registration info as completed
+
+
+                // Save the plate number to Firebase
+                savePlateNumberToFirebase(plateNumber)
+
+                // Navigate to the next activity
+
+            } else {
+                plateNo.error = "Please enter the plate number"
             }
+        }
+    }
+        // Function to save plate number to Firebase
+        private fun savePlateNumberToFirebase(plateNumber: String) {
+            // Create a new entry in the Firebase database
+            val vehicleId = database.push().key ?: return
+            val vehicleData = mapOf("plateNumber" to plateNumber)
+
+            // Save the data to Firebase under the unique vehicleId
+            database.child(vehicleId).setValue(vehicleData)
+                .addOnSuccessListener {
+                    // Successfully saved to Firebase
+                    showToast("Plate number saved successfully")
+                    sharedPreferences.edit().putBoolean("registrationInfoCompleted", true).apply()
+                    navigateToFragment(vehicleimage())
+                }
+                .addOnFailureListener {
+                    // Failed to save to Firebase
+                    showToast("Failed to save plate number")
+                }
+        }
+
+    // Function to show a Toast message
+    private fun showToast(message: String) {
+        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+    }
+    private fun navigateToFragment(fragment: Fragment) {
+        val transaction: FragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
+        transaction.replace(R.id.container, fragment)
+        transaction.addToBackStack(null) // Adds the transaction to the back stack
+        transaction.commit()
     }
 }

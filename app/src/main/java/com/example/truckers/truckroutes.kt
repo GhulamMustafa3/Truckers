@@ -1,32 +1,39 @@
 package com.example.truckers
 
+import android.annotation.SuppressLint
+import android.app.DatePickerDialog
+import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.ProgressBar
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity.MODE_PRIVATE
+import androidx.fragment.app.FragmentTransaction
+import com.google.android.material.textfield.TextInputEditText
+import com.google.firebase.database.FirebaseDatabase
+import java.util.Calendar
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [truckroutes.newInstance] factory method to
- * create an instance of this fragment.
- */
 class truckroutes : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
-
+    private lateinit var progressBar: ProgressBar
+    private lateinit var originInput: TextInputEditText
+    private lateinit var destinationInput: TextInputEditText
+    private lateinit var startDate: TextInputEditText
+    private lateinit var endDate: TextInputEditText
+    private var savedOrigin: String? = null
+    private var savedDestination: String? = null
+    private var savedStartDate: String? = null
+    private var savedEndDate: String? = null
+    private var routeId: String? = null
+    private lateinit var sharedPreferences: SharedPreferences
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
     }
 
     override fun onCreateView(
@@ -37,23 +44,183 @@ class truckroutes : Fragment() {
         return inflater.inflate(R.layout.fragment_truckroutes, container, false)
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment truckroutes.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            truckroutes().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        // Initialize the views
+        originInput = view.findViewById(R.id.orign_input)
+        destinationInput = view.findViewById(R.id.des_input)
+        startDate = view.findViewById(R.id.sdateinput)
+        endDate = view.findViewById(R.id.edate_input)
+        val nextButton: Button = view.findViewById(R.id.next_button)
+        progressBar = view.findViewById(R.id.progress_bar)
+        sharedPreferences =  requireContext().getSharedPreferences("VehicleInfoFlags", MODE_PRIVATE)
+        // Setup date pickers for start and end date
+        setupEditTextWithIcon(startDate) {
+            showDatePicker { date -> startDate.setText(date) }
+        }
+
+        setupEditTextWithIcon(endDate) {
+            showDatePicker { date -> endDate.setText(date) }
+        }
+
+        // Set click listener for the "Next" button
+        nextButton.setOnClickListener {
+            val origin = originInput.text.toString().trim()
+            val destination = destinationInput.text.toString().trim()
+            val start = startDate.text.toString().trim()
+            val end = endDate.text.toString().trim()
+
+            if (validateInputs(origin, destination, start, end)) {
+                if (isDataModified(origin, destination, start, end)) {
+                    saveDataToFirebase(origin, destination, start, end)
+                    sharedPreferences.edit()
+
+                        .putBoolean("routesdetailsComplete", true)
+                        .apply()
+                } else {
+                    showToast("Data is unchanged, no need to save.")
                 }
             }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // Load data from Firebase when the fragment is resumed
+        loadDataFromFirebase()
+    }
+
+    private fun loadDataFromFirebase() {
+        val database = FirebaseDatabase.getInstance()
+        val ref = database.getReference("TruckRoutes")
+
+
+        ref.get().addOnSuccessListener { snapshot ->
+            if (snapshot.exists()) {
+                val data = snapshot.value as? Map<String, String>
+                data?.let {
+                    // Store the saved data for comparison
+                    savedOrigin = it["origin"]
+                    savedDestination = it["destination"]
+                    savedStartDate = it["startDate"]
+                    savedEndDate = it["endDate"]
+
+                    // Populate the fields with the saved data
+                    originInput.setText(savedOrigin)
+                    destinationInput.setText(savedDestination)
+                    startDate.setText(savedStartDate)
+                    endDate.setText(savedEndDate)
+                }
+            }
+        }.addOnFailureListener {
+            showToast("Failed to load route data.")
+        }
+    }
+
+    private fun isDataModified(origin: String, destination: String, start: String, end: String): Boolean {
+        // Check if the current data is different from the saved data
+        return origin != savedOrigin || destination != savedDestination || start != savedStartDate || end != savedEndDate
+    }
+
+    private fun navigateToFragment(fragment: Fragment) {
+        val transaction: FragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
+        transaction.replace(R.id.container, fragment)
+        transaction.addToBackStack(null) // Adds the transaction to the back stack
+        transaction.commit()
+    }
+
+    private fun validateInputs(origin: String, destination: String, start: String, end: String): Boolean {
+        if (origin.isEmpty()) {
+            showToast("Origin is required")
+            return false
+        }
+        if (destination.isEmpty()) {
+            showToast("Destination is required")
+            return false
+        }
+        if (start.isEmpty()) {
+            showToast("Start date is required")
+            return false
+        }
+        if (end.isEmpty()) {
+            showToast("End date is required")
+            return false
+        }
+        return true
+    }
+
+    private fun saveDataToFirebase(origin: String, destination: String, start: String, end: String) {
+        val database = FirebaseDatabase.getInstance()
+        val ref = database.getReference("TruckRoutes")
+
+        val routeData = mapOf(
+
+            "origin" to origin,
+            "destination" to destination,
+            "startDate" to start,
+            "endDate" to end
+        )
+
+        // Show the progress bar
+        progressBar.visibility = View.VISIBLE
+
+        ref.setValue(routeData).addOnCompleteListener { task ->
+            // Hide the progress bar
+            progressBar.visibility = View.GONE
+
+            if (task.isSuccessful) {
+                showToast("Route saved successfully")
+                val sharedPreferences = requireContext().getSharedPreferences("VehicleInfoFlags", MODE_PRIVATE)
+                sharedPreferences.edit().putBoolean("routesdetailsComplete", true).apply()
+                navigateToFragment(truckdetails())
+
+            } else {
+                showToast("Failed to save route: ${task.exception?.message}")
+            }
+        }
+    }
+
+    private fun showToast(message: String) {
+        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun isDrawableEndClicked(editText: TextInputEditText, event: MotionEvent): Boolean {
+        val drawableEnd = editText.compoundDrawablesRelative[2] ?: return false
+        val drawableWidth = drawableEnd.bounds.width()
+        return event.rawX >= (editText.right - drawableWidth - editText.paddingEnd)
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private fun setupEditTextWithIcon(editText: TextInputEditText, onClick: () -> Unit) {
+        editText.setOnTouchListener { _, event ->
+            if (event.action == MotionEvent.ACTION_UP && isDrawableEndClicked(editText, event)) {
+                onClick()
+                editText.performClick()
+                true
+            } else {
+                false
+            }
+        }
+    }
+
+    private fun showDatePicker(onDateSelected: (String) -> Unit) {
+        val calendar = Calendar.getInstance()
+        val year = calendar.get(Calendar.YEAR)
+        val month = calendar.get(Calendar.MONTH)
+        val day = calendar.get(Calendar.DAY_OF_MONTH)
+
+        val datePickerDialog = DatePickerDialog(
+            requireContext(),
+            { _, selectedYear, selectedMonth, selectedDay ->
+                val formattedDate = "$selectedDay/${selectedMonth + 1}/$selectedYear"
+                onDateSelected(formattedDate)
+            },
+            year,
+            month,
+            day
+        )
+        datePickerDialog.show()
     }
 }
+

@@ -79,6 +79,7 @@
             android:layout_height="wrap_content"
             android:hint="Enter CNIC NO"
             android:padding="12dp"
+            android:maxLength="13"
             android:background="@drawable/rectangleshape"
             android:inputType="number"
             android:layout_marginTop="24dp" />

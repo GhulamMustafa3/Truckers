@@ -43,7 +43,7 @@ class BasicInfo : AppCompatActivity() {
             if (validateInputs(username, email, password, phone)) {
                 registerUser(username, email, password, phone)
                 // Save completion status in SharedPreferences
-
+                saveToFirebase(username,email,phone)
 
 
 
