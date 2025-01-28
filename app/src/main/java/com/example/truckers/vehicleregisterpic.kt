@@ -53,6 +53,21 @@ class vehicleregisterpic : Fragment() {
         addFImg = view.findViewById(R.id.add_photo_front)
         addBImg = view.findViewById(R.id.add_photo_back)
         sharedPreferences =  requireContext().getSharedPreferences("VehicleInfoFlags", MODE_PRIVATE)
+        val savedImagePaths = loadSavedImages()
+        if (savedImagePaths != null) {
+            val (frontImagePath, backImagePath) = savedImagePaths
+            val frontFile = File(requireContext().filesDir, frontImagePath)
+            val backFile = File(requireContext().filesDir, backImagePath)
+
+
+            if (frontFile.exists() && backFile.exists()) {
+                fImg.setImageURI(Uri.fromFile(frontFile))
+                bImg.setImageURI(Uri.fromFile(backFile))
+                isFrontImageTaken = true
+                isBackImageTaken = true
+            }
+        }
+
         addFImg.setOnClickListener {
             showImageSourceDialog(REQUEST_IMAGE_CAPTURE_FRONT, REQUEST_IMAGE_GALLERY_FRONT)
         }
@@ -75,17 +90,32 @@ class vehicleregisterpic : Fragment() {
         }
     }
 
-    // Load the saved image paths from the database when the fragment is resumed
-    override fun onResume() {
-        super.onResume()
-        loadSavedImages()
+
+
+    private fun loadSavedImages(): Pair<String, String>? {
+        val frontImagePath = getSavedImagePath(DatabaseHelper.VREGISTER_FRONT_IMAGE_PATH)
+        val backImagePath = getSavedImagePath(DatabaseHelper.VREGISTER_BACK_IMAGE_PATH)
+
+        if (frontImagePath != null && backImagePath != null) {
+            val frontFile = File(requireContext().filesDir, frontImagePath)
+            val backFile = File(requireContext().filesDir, backImagePath)
+
+            if (frontFile.exists() && backFile.exists()) {
+                fImg.setImageURI(Uri.fromFile(frontFile))
+                bImg.setImageURI(Uri.fromFile(backFile))
+                isFrontImageTaken = true
+                isBackImageTaken = true
+                return Pair(frontImagePath, backImagePath)
+            }
+        }
+        return null
     }
 
-    private fun loadSavedImages() {
+    private fun getSavedImagePath(imageColumn: String): String? {
         val db = databaseHelper.readableDatabase
         val cursor = db.query(
             DatabaseHelper.TABLE_VEHICLE_CERTIFICATE,
-            arrayOf(DatabaseHelper.VREGISTER_FRONT_IMAGE_PATH, DatabaseHelper.VREGISTER_BACK_IMAGE_PATH),
+            arrayOf(imageColumn),
             null,
             null,
             null,
@@ -93,30 +123,19 @@ class vehicleregisterpic : Fragment() {
             null
         )
 
+        var imagePath: String? = null
         if (cursor != null && cursor.moveToFirst()) {
-            val frontImageColumnIndex = cursor.getColumnIndex(DatabaseHelper.VREGISTER_FRONT_IMAGE_PATH)
-            val backImageColumnIndex = cursor.getColumnIndex(DatabaseHelper.VREGISTER_BACK_IMAGE_PATH)
-
-            // Check if the column index is valid (>= 0)
-            if (frontImageColumnIndex >= 0) {
-                val frontImagePath = cursor.getString(frontImageColumnIndex)
-                if (frontImagePath.isNotEmpty()) {
-                    fImg.setImageURI(Uri.parse(frontImagePath)) // Load front image
-                }
-            }
-
-            if (backImageColumnIndex >= 0) {
-                val backImagePath = cursor.getString(backImageColumnIndex)
-                if (backImagePath.isNotEmpty()) {
-                    bImg.setImageURI(Uri.parse(backImagePath)) // Load back image
-                }
+            val columnIndex = cursor.getColumnIndex(imageColumn)
+            if (columnIndex >= 0) {
+                imagePath = cursor.getString(columnIndex)
             }
         }
-
-
         cursor?.close()
         db.close()
+        return imagePath
     }
+
+
 
     private fun showImageSourceDialog(frontRequestCode: Int, backRequestCode: Int) {
         val options = arrayOf("Take a Photo", "Choose from Gallery")

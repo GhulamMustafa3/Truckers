@@ -32,7 +32,7 @@ class equipmentlimits : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        database = FirebaseDatabase.getInstance().reference
+        database = FirebaseDatabase.getInstance().getReference("users")
     }
 
     override fun onCreateView(
@@ -79,11 +79,11 @@ class equipmentlimits : Fragment() {
     }
 
     private fun loadEquipmentDetails() {
-        val sharedPreferences = requireContext().getSharedPreferences("VehicleInfoFlags", MODE_PRIVATE)
 
 
 
-            database.child("equipmentDetails").get().addOnSuccessListener { snapshot ->
+
+            database.get().addOnSuccessListener { snapshot ->
                 if (snapshot.exists()) {
                     val data = snapshot.value as? Map<String, String>
                     data?.let {
@@ -121,7 +121,7 @@ class equipmentlimits : Fragment() {
         )
 
         progressBar.visibility = View.VISIBLE
-        database.child("equipmentDetails").setValue(detailsData)
+        database.updateChildren(detailsData)
             .addOnCompleteListener { task ->
                 progressBar.visibility = View.GONE
 

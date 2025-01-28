@@ -86,6 +86,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:inputType="textPersonName"
+            android:clickable="false"
+            android:focusable="false"
             android:drawableEnd="@drawable/baseline_arrow_forward_ios_24"
             android:padding="12dp" />
     </com.google.android.material.textfield.TextInputLayout>
@@ -113,6 +115,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:inputType="textPersonName"
+            android:clickable="false"
+            android:focusable="false"
             android:drawableEnd="@drawable/baseline_arrow_forward_ios_24"
             android:padding="12dp" />
     </com.google.android.material.textfield.TextInputLayout>

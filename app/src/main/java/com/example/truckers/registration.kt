@@ -39,7 +39,7 @@ class registration : Fragment() {
         sharedPreferences =  requireContext().getSharedPreferences("VehicleInfoFlags", MODE_PRIVATE)
 
         // Initialize Firebase Database reference
-        database = FirebaseDatabase.getInstance().getReference("VehicleInfo")
+        database = FirebaseDatabase.getInstance().getReference("users")
 
         plateNo = view.findViewById(R.id.registration_plate_input)
         val nextBtn: Button = view.findViewById(R.id.next_button)
@@ -64,11 +64,11 @@ class registration : Fragment() {
         // Function to save plate number to Firebase
         private fun savePlateNumberToFirebase(plateNumber: String) {
             // Create a new entry in the Firebase database
-            val vehicleId = database.push().key ?: return
-            val vehicleData = mapOf("plateNumber" to plateNumber)
+
+            val vehicleData: Map<String, String> = mapOf("plateNumber" to plateNumber)
 
             // Save the data to Firebase under the unique vehicleId
-            database.child(vehicleId).setValue(vehicleData)
+            database.updateChildren(vehicleData)
                 .addOnSuccessListener {
                     // Successfully saved to Firebase
                     showToast("Plate number saved successfully")

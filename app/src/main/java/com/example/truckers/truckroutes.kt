@@ -93,7 +93,7 @@ class truckroutes : Fragment() {
 
     private fun loadDataFromFirebase() {
         val database = FirebaseDatabase.getInstance()
-        val ref = database.getReference("TruckRoutes")
+        val ref = database.getReference("users")
 
 
         ref.get().addOnSuccessListener { snapshot ->
@@ -152,7 +152,7 @@ class truckroutes : Fragment() {
 
     private fun saveDataToFirebase(origin: String, destination: String, start: String, end: String) {
         val database = FirebaseDatabase.getInstance()
-        val ref = database.getReference("TruckRoutes")
+        val ref = database.getReference("users")
 
         val routeData = mapOf(
 
@@ -165,7 +165,7 @@ class truckroutes : Fragment() {
         // Show the progress bar
         progressBar.visibility = View.VISIBLE
 
-        ref.setValue(routeData).addOnCompleteListener { task ->
+        ref.updateChildren(routeData).addOnCompleteListener { task ->
             // Hide the progress bar
             progressBar.visibility = View.GONE
 
