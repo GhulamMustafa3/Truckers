@@ -12,6 +12,7 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity.MODE_PRIVATE
 import androidx.fragment.app.FragmentTransaction
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 
@@ -20,9 +21,11 @@ class registration : Fragment() {
     private lateinit var plateNo: EditText
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var database: DatabaseReference
+    private lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        auth = FirebaseAuth.getInstance()
 
     }
 
@@ -63,22 +66,26 @@ class registration : Fragment() {
     }
         // Function to save plate number to Firebase
         private fun savePlateNumberToFirebase(plateNumber: String) {
-            // Create a new entry in the Firebase database
+            val userId = auth.currentUser?.uid // Get current user's UID
 
-            val vehicleData: Map<String, String> = mapOf("plateNumber" to plateNumber)
+            if (userId != null) {
+                val vehicleData: Map<String, String> = mapOf("plateNumber" to plateNumber)
 
-            // Save the data to Firebase under the unique vehicleId
-            database.updateChildren(vehicleData)
-                .addOnSuccessListener {
-                    // Successfully saved to Firebase
-                    showToast("Plate number saved successfully")
-                    sharedPreferences.edit().putBoolean("registrationInfoCompleted", true).apply()
-                    navigateToFragment(vehicleimage())
-                }
-                .addOnFailureListener {
-                    // Failed to save to Firebase
-                    showToast("Failed to save plate number")
-                }
+                // Save the data to Firebase under the user's UID
+                database.child(userId).updateChildren(vehicleData)
+                    .addOnSuccessListener {
+                        // Successfully saved to Firebase
+                        showToast("Plate number saved successfully")
+                        sharedPreferences.edit().putBoolean("registrationInfoCompleted", true).apply()
+                        navigateToFragment(vehicleimage())
+                    }
+                    .addOnFailureListener {
+                        // Failed to save to Firebase
+                        showToast("Failed to save plate number")
+                    }
+            } else {
+                showToast("User not authenticated")
+            }
         }
 
     // Function to show a Toast message

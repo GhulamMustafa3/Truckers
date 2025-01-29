@@ -13,6 +13,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity.MODE_PRIVATE
 import androidx.fragment.app.FragmentTransaction
 import com.google.android.material.textfield.TextInputEditText
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 
@@ -110,38 +111,44 @@ class equipmentlimits : Fragment() {
     }
 
     private fun saveEquipmentDetailsToFirebase(length: String, weight: String, limits: String, type: String) {
+        val currentUser = FirebaseAuth.getInstance().currentUser
+        if (currentUser != null) {
+            val userId = currentUser.uid  // Get the UID of the logged-in user
 
+            val userRef = FirebaseDatabase.getInstance().getReference("users").child(userId)  // Reference the user's node by UID
 
-        val detailsData = mapOf(
+            val detailsData = mapOf(
+                "length" to length,
+                "weight" to weight,
+                "limits" to limits,
+                "type" to type
+            )
 
-            "length" to length,
-            "weight" to weight,
-            "limits" to limits,
-            "type" to type
-        )
+            progressBar.visibility = View.VISIBLE
+            userRef.updateChildren(detailsData)  // Save the data under the user's equipmentDetails node
+                .addOnCompleteListener { task ->
+                    progressBar.visibility = View.GONE
 
-        progressBar.visibility = View.VISIBLE
-        database.updateChildren(detailsData)
-            .addOnCompleteListener { task ->
-                progressBar.visibility = View.GONE
+                    if (task.isSuccessful) {
+                        val sharedPreferences = requireContext().getSharedPreferences("VehicleInfoFlags", MODE_PRIVATE)
+                        sharedPreferences.edit()
+                            .putBoolean("equipmentDetailsComplete", true)
+                            .apply()
 
-                if (task.isSuccessful) {
-                    val sharedPreferences = requireContext().getSharedPreferences("VehicleInfoFlags", MODE_PRIVATE)
-                    sharedPreferences.edit()
-
-                        .putBoolean("equipmentDetailsComplete", true)
-                        .apply()
-
-                    navigateToFragment(truckroutes())
-                } else {
-                    Toast.makeText(requireContext(), "Failed to save data. Please try again.", Toast.LENGTH_SHORT).show()
+                        navigateToFragment(truckroutes())
+                    } else {
+                        Toast.makeText(requireContext(), "Failed to save data. Please try again.", Toast.LENGTH_SHORT).show()
+                    }
                 }
-            }
-            .addOnFailureListener {
-                progressBar.visibility = View.GONE
-                Toast.makeText(requireContext(), "Error: ${it.message}", Toast.LENGTH_SHORT).show()
-            }
+                .addOnFailureListener {
+                    progressBar.visibility = View.GONE
+                    Toast.makeText(requireContext(), "Error: ${it.message}", Toast.LENGTH_SHORT).show()
+                }
+        } else {
+            Toast.makeText(requireContext(), "No user is logged in.", Toast.LENGTH_SHORT).show()
+        }
     }
+
 
     private fun validateInputs(length: String, weight: String, limits: String, type: String): Boolean {
         var isValid = true

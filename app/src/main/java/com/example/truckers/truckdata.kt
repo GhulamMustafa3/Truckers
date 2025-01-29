@@ -1,10 +1,11 @@
 package com.example.truckers
 
 data class truckdata(
-    val username: String = "",
-    val origin: String = "",
-    val destination: String = "",
-    val weight: String = "",
-    val length: String = "",
-    val type: String = ""
+    val username: String ?= null,
+    val origin: String ?= null,
+    val destination: String ?= null,
+    val weight: String ?= null,
+    val length: String ?= null,
+    val limits: String ?= null,
+    val type:String?= null
 )

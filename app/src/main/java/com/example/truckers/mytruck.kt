@@ -21,6 +21,7 @@ class mytruck : Fragment() {
     private lateinit var  recyclerView: RecyclerView
     private lateinit var noLoadsImage: ImageView
     private lateinit var noLoadsText: TextView
+   private lateinit var truckarraylist:ArrayList<truckdata>
 
     private val truckList = arrayListOf<truckdata>()
 
@@ -31,7 +32,7 @@ class mytruck : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_mytruck, container, false)
 
-         recyclerView = view.findViewById(R.id.truck_recycler_view)
+        recyclerView = view.findViewById(R.id.truck_recycler_view)
 
         val addTruckButton: FloatingActionButton = view.findViewById(R.id.add_truck)
         noLoadsImage = view.findViewById(R.id.no_loads_image)
@@ -40,9 +41,13 @@ class mytruck : Fragment() {
 
 
         // Setup RecyclerView
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
+       recyclerView.setHasFixedSize(true)
 
-
+        truckarraylist= arrayListOf<truckdata> ()
+        // Fetch truck data from Firebase
+       loaddata()
 
         // Handle FloatingActionButton click
         addTruckButton.setOnClickListener {
@@ -64,18 +69,18 @@ class mytruck : Fragment() {
 
 
     private fun loaddata(){
-        database=FirebaseDatabase.getInstance().getReference("TruckRoutes")
+        database=FirebaseDatabase.getInstance().getReference("users")
    database.addValueEventListener(object :ValueEventListener{
        override fun onDataChange(snapshot: DataSnapshot) {
            if(snapshot.exists()){
                for(trucksnap in snapshot.children){
                    val truckdetail=trucksnap.getValue(truckdata::class.java)
-                    truckList.add(truckdetail!!)
+                    truckarraylist.add(truckdetail!!)
                }
-
+          recyclerView.adapter=TruckCardAdapter(truckarraylist)
            }
            // Update visibility based on data availability
-           if (truckList.isNotEmpty()) {
+           if (truckarraylist.isNotEmpty()) {
                recyclerView.visibility = View.VISIBLE
                noLoadsImage.visibility = View.GONE
                noLoadsText.visibility = View.GONE

@@ -16,6 +16,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity.MODE_PRIVATE
 import androidx.fragment.app.FragmentTransaction
 import com.google.android.material.textfield.TextInputEditText
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import java.util.Calendar
 
@@ -149,37 +150,48 @@ class truckroutes : Fragment() {
         }
         return true
     }
-
     private fun saveDataToFirebase(origin: String, destination: String, start: String, end: String) {
-        val database = FirebaseDatabase.getInstance()
-        val ref = database.getReference("users")
+        val currentUser = FirebaseAuth.getInstance().currentUser
+        if (currentUser != null) {
+            val userId = currentUser.uid // Get the UID of the current user
 
-        val routeData = mapOf(
+            val database = FirebaseDatabase.getInstance()
+            val usersRef = database.getReference("users")
 
-            "origin" to origin,
-            "destination" to destination,
-            "startDate" to start,
-            "endDate" to end
-        )
+            // Reference the user's node by UID
+            val userRef = usersRef.child(userId)
 
-        // Show the progress bar
-        progressBar.visibility = View.VISIBLE
+            val routeData = mapOf(
+                "origin" to origin,
+                "destination" to destination,
+                "startDate" to start,
+                "endDate" to end
+            )
 
-        ref.updateChildren(routeData).addOnCompleteListener { task ->
-            // Hide the progress bar
-            progressBar.visibility = View.GONE
+            // Show the progress bar
+            progressBar.visibility = View.VISIBLE
 
-            if (task.isSuccessful) {
-                showToast("Route saved successfully")
-                val sharedPreferences = requireContext().getSharedPreferences("VehicleInfoFlags", MODE_PRIVATE)
-                sharedPreferences.edit().putBoolean("routesdetailsComplete", true).apply()
-                navigateToFragment(truckdetails())
+            // Save the data under the user's node
+            userRef.updateChildren(routeData).addOnCompleteListener { task ->
+                // Hide the progress bar
+                progressBar.visibility = View.GONE
 
-            } else {
-                showToast("Failed to save route: ${task.exception?.message}")
+                if (task.isSuccessful) {
+                    showToast("Route saved successfully")
+                    val sharedPreferences = requireContext().getSharedPreferences("VehicleInfoFlags", MODE_PRIVATE)
+                    sharedPreferences.edit().putBoolean("routesdetailsComplete", true).apply()
+                    navigateToFragment(truckdetails())
+                } else {
+                    showToast("Failed to save route: ${task.exception?.message}")
+                }
             }
+        } else {
+            showToast("No user is logged in.")
         }
     }
+
+
+
 
     private fun showToast(message: String) {
         Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()

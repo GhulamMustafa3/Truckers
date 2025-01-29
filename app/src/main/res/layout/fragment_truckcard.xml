@@ -28,7 +28,7 @@
 
                 <!-- Company Name -->
                 <TextView
-                    android:id="@+id/company_name"
+                    android:id="@+id/username"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentStart="true"
@@ -155,6 +155,16 @@
                         android:text="FULL"
                         android:textColor="@color/black"
                         android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/truck_type"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Truck"
+                        android:textColor="@color/black"
+                        android:textSize="14sp" />
+
 
 
                 </LinearLayout>

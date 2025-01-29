@@ -9,11 +9,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.truckers.databinding.FragmentProfileBinding
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.*
 
 class Profile : Fragment() {
 
@@ -55,45 +51,52 @@ class Profile : Fragment() {
         return root
     }
 
+    // Function to fetch user data from Firebase
     private fun fetchUserData() {
-        // Get the current user's UID
-        val userId = auth.currentUser?.uid
+        val currentUser = auth.currentUser
+        if (currentUser != null) {
+            val userId = currentUser.uid // Get the UID of the current user
 
-        if (userId != null) {
-            // Reference to the user's data in Firebase Realtime Database
-            val userRef = database.child("users").child(userId)
+            if (userId.isNotEmpty()) {
+                // Reference to the user's data in Firebase Realtime Database
+                val userRef = database.child("users").child(userId)
 
-            // Fetch the user data
-            userRef.addListenerForSingleValueEvent(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    // Check if data exists
-                    if (snapshot.exists()) {
+                // Fetch the user data
+                userRef.addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        if (snapshot.exists()) {
+                            // Extract user data
+                            val username = snapshot.child("username").value.toString()
+                            val email = snapshot.child("email").value.toString()
+                            val phone = snapshot.child("phone").value.toString()
 
-
-                        val email = snapshot.child("email").value.toString()
-                        val phone = snapshot.child("phone").value.toString()
-
-                        // Set the retrieved data into the UI elements
-
-                        binding.email.text = email
-                        binding.phone.text = phone
-                    } else {
-                        Toast.makeText(requireContext(), "User data not found", Toast.LENGTH_SHORT).show()
+                            // Set the retrieved data into the UI elements
+                            binding.email.text = email
+                            binding.phone.text = phone
+                            binding.username.text = username
+                        } else {
+                            Toast.makeText(requireContext(), "User data not found", Toast.LENGTH_SHORT).show()
+                        }
                     }
-                }
 
-                override fun onCancelled(error: DatabaseError) {
-                    Toast.makeText(requireContext(), "Failed to load user data: ${error.message}", Toast.LENGTH_SHORT).show()
-                }
-            })
+                    override fun onCancelled(error: DatabaseError) {
+                        Toast.makeText(requireContext(), "Failed to load user data: ${error.message}", Toast.LENGTH_SHORT).show()
+                    }
+                })
+            } else {
+                Toast.makeText(requireContext(), "User ID not found", Toast.LENGTH_SHORT).show()
+            }
         } else {
             Toast.makeText(requireContext(), "No user is logged in", Toast.LENGTH_SHORT).show()
         }
     }
+
 
     override fun onDestroyView() {
         super.onDestroyView()
         // Clean up the binding to avoid memory leaks
         _binding = null
     }
+
+
 }
