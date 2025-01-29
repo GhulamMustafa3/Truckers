@@ -7,6 +7,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.truckers.databinding.ActivityLoginBinding
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 
 class Login : AppCompatActivity() {
 
@@ -21,12 +22,7 @@ class Login : AppCompatActivity() {
         // Initialize Firebase Authentication
         auth = FirebaseAuth.getInstance()
 
-        if (auth.currentUser != null) {
-            // Redirect to HomeActivity
-            val intent = Intent(this, HomeActivity::class.java)
-            startActivity(intent)
-            finish() // Close the current activity
-        }
+
 
         // Handle Login button click
         binding.login.setOnClickListener {
@@ -56,23 +52,54 @@ class Login : AppCompatActivity() {
     }
 
     private fun loginUser(email: String, password: String) {
-        // Show progress bar
         binding.progressBar.visibility = View.VISIBLE
 
         auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
                 binding.progressBar.visibility = View.GONE
                 if (task.isSuccessful) {
-                    // Login successful, navigate to MainActivity
-                    Toast.makeText(this, "Login successful", Toast.LENGTH_SHORT).show()
-                    val intent = Intent(this, HomeActivity::class.java)
-                    startActivity(intent)
+                    val userId = auth.currentUser?.uid
+
+                    val databaseRef = FirebaseDatabase.getInstance().reference
+
+                    // Check if user exists in 'users' (Drivers)
+                    databaseRef.child("users").child(userId!!).get()
+                        .addOnSuccessListener { snapshot ->
+                            if (snapshot.exists()) {
+                                navigateToHome("driver") // Redirect to Driver Home
+                            } else {
+                                // Check if user exists in 'shippers'
+                                databaseRef.child("shippers").child(userId).get()
+                                    .addOnSuccessListener { shipperSnapshot ->
+                                        if (shipperSnapshot.exists()) {
+                                            navigateToHome("shipper") // Redirect to Shipper Home
+                                        } else {
+                                            Toast.makeText(this, "User not found", Toast.LENGTH_SHORT).show()
+                                        }
+                                    }
+                                    .addOnFailureListener {
+                                        Toast.makeText(this, "Error fetching shipper data", Toast.LENGTH_SHORT).show()
+                                    }
+                            }
+                        }
+                        .addOnFailureListener {
+                            Toast.makeText(this, "Error fetching user data", Toast.LENGTH_SHORT).show()
+                        }
                 } else {
-                    // Login failed, show error message
                     Toast.makeText(this, "Login failed: ${task.exception?.message}", Toast.LENGTH_LONG).show()
                 }
             }
     }
+    private fun navigateToHome(userType: String?) {
+        val intent = when (userType) {
+            "driver" -> Intent(this, HomeActivity::class.java)
+            "shipper" -> Intent(this, ShipperHome::class.java)
+            else -> Intent(this, HomeActivity::class.java) // Default fallback
+        }
+        startActivity(intent)
+        finish()
+    }
+
 
 
 }

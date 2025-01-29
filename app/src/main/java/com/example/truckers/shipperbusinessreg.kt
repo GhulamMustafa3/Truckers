@@ -112,7 +112,7 @@ class shipperbusinessreg : AppCompatActivity() {
             "phone" to phone
         )
 
-        database.child("users").child(userId).setValue(user)
+        database.child("shippers").child(userId).setValue(user)
             .addOnSuccessListener {
                 showToast("Data saved successfully")
                 val intent = Intent(this, ShipperHome::class.java)

@@ -71,7 +71,7 @@ private var _binding:FragmentShipperProfileBinding?=null
 
             if (userId.isNotEmpty()) {
                 // Reference to the user's data in Firebase Realtime Database
-                val userRef = database.child("users").child(userId)
+                val userRef = database.child("shippers").child(userId)
 
                 // Fetch the user data
                 userRef.addListenerForSingleValueEvent(object : ValueEventListener {
