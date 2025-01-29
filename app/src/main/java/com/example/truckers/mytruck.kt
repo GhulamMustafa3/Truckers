@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 
 class mytruck : Fragment() {
@@ -68,37 +69,59 @@ class mytruck : Fragment() {
     }
 
 
-    private fun loaddata(){
-        database=FirebaseDatabase.getInstance().getReference("users")
-   database.addValueEventListener(object :ValueEventListener{
-       override fun onDataChange(snapshot: DataSnapshot) {
-           if(snapshot.exists()){
-               for(trucksnap in snapshot.children){
-                   val truckdetail=trucksnap.getValue(truckdata::class.java)
-                    truckarraylist.add(truckdetail!!)
-               }
-          recyclerView.adapter=TruckCardAdapter(truckarraylist)
-           }
-           // Update visibility based on data availability
-           if (truckarraylist.isNotEmpty()) {
-               recyclerView.visibility = View.VISIBLE
-               noLoadsImage.visibility = View.GONE
-               noLoadsText.visibility = View.GONE
-           } else {
-               recyclerView.visibility = View.GONE
-               noLoadsImage.visibility = View.VISIBLE
-               noLoadsText.visibility = View.VISIBLE
-           }
+    private fun loaddata() {
+        val currentUser = FirebaseAuth.getInstance().currentUser
+        if (currentUser != null) {
+            val userId = currentUser.uid // Get the UID of the current user
+            val database = FirebaseDatabase.getInstance().getReference("users")
 
+            // Reference the user's trucks node
+            val trucksRef = database.child(userId).child("trucks")
 
-       }
+            trucksRef.addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    truckarraylist.clear() // Clear the existing list before adding new data
 
-       override fun onCancelled(error: DatabaseError) {
+                    if (snapshot.exists()) {
+                        for (trucksnap in snapshot.children) {
+                            // Deserialize the truck data into truckdata objects
+                            val truckdetail = trucksnap.getValue(truckdata::class.java)
+                            if (truckdetail != null) {
+                                truckarraylist.add(truckdetail)
+                            }
+                        }
 
-       }
-   })
+                        // Set the adapter with the updated truck list
+                        recyclerView.adapter = TruckCardAdapter(truckarraylist)
 
+                        // Update visibility based on data availability
+                        if (truckarraylist.isNotEmpty()) {
+                            recyclerView.visibility = View.VISIBLE
+                            noLoadsImage.visibility = View.GONE
+                            noLoadsText.visibility = View.GONE
+                        } else {
+                            recyclerView.visibility = View.GONE
+                            noLoadsImage.visibility = View.VISIBLE
+                            noLoadsText.visibility = View.VISIBLE
+                        }
+                    } else {
+                        // Handle the case where no trucks are available
+                        recyclerView.visibility = View.GONE
+                        noLoadsImage.visibility = View.VISIBLE
+                        noLoadsText.visibility = View.VISIBLE
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    // Handle any errors during data retrieval
+
+                }
+            })
+        } else {
+
+        }
     }
+
 
 
 }

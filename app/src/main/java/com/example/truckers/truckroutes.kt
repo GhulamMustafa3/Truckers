@@ -17,7 +17,10 @@ import androidx.appcompat.app.AppCompatActivity.MODE_PRIVATE
 import androidx.fragment.app.FragmentTransaction
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import java.util.Calendar
 
 
@@ -161,34 +164,60 @@ class truckroutes : Fragment() {
             // Reference the user's node by UID
             val userRef = usersRef.child(userId)
 
-            val routeData = mapOf(
-                "origin" to origin,
-                "destination" to destination,
-                "startDate" to start,
-                "endDate" to end
-            )
+            // Get the truck ID(s) associated with the current user
+            val trucksRef = userRef.child("trucks")
 
-            // Show the progress bar
-            progressBar.visibility = View.VISIBLE
+            trucksRef.addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    if (snapshot.exists()) {
+                        // Assuming the user has only one truck, you can get the first truck's ID
+                        val truckId = snapshot.children.first().key // Get the first truck's ID
 
-            // Save the data under the user's node
-            userRef.updateChildren(routeData).addOnCompleteListener { task ->
-                // Hide the progress bar
-                progressBar.visibility = View.GONE
+                        if (truckId != null) {
+                            val truckRef = userRef.child("trucks").child(truckId)
 
-                if (task.isSuccessful) {
-                    showToast("Route saved successfully")
-                    val sharedPreferences = requireContext().getSharedPreferences("VehicleInfoFlags", MODE_PRIVATE)
-                    sharedPreferences.edit().putBoolean("routesdetailsComplete", true).apply()
-                    navigateToFragment(truckdetails())
-                } else {
-                    showToast("Failed to save route: ${task.exception?.message}")
+                            val routeData = mapOf(
+                                "origin" to origin,
+                                "destination" to destination,
+                                "startDate" to start,
+                                "endDate" to end
+                            )
+
+                            // Show the progress bar
+                            progressBar.visibility = View.VISIBLE
+
+                            // Directly update the truck node with the route data
+                            truckRef.updateChildren(routeData).addOnCompleteListener { task ->
+                                // Hide the progress bar
+                                progressBar.visibility = View.GONE
+
+                                if (task.isSuccessful) {
+                                    showToast("Route saved successfully under truck ID $truckId")
+                                    val sharedPreferences = requireContext().getSharedPreferences("VehicleInfoFlags", MODE_PRIVATE)
+                                    sharedPreferences.edit().putBoolean("routesdetailsComplete", true).apply()
+                                    navigateToFragment(truckdetails())
+                                } else {
+                                    showToast("Failed to save route: ${task.exception?.message}")
+                                }
+                            }
+                        } else {
+                            showToast("No truck found for the current user.")
+                        }
+                    } else {
+                        showToast("No trucks available for the current user.")
+                    }
                 }
-            }
+
+                override fun onCancelled(error: DatabaseError) {
+                    showToast("Failed to retrieve truck data: ${error.message}")
+                }
+            })
         } else {
             showToast("No user is logged in.")
         }
     }
+
+
 
 
 

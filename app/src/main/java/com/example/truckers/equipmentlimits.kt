@@ -115,9 +115,15 @@ class equipmentlimits : Fragment() {
         if (currentUser != null) {
             val userId = currentUser.uid  // Get the UID of the logged-in user
 
-            val userRef = FirebaseDatabase.getInstance().getReference("users").child(userId)  // Reference the user's node by UID
+            val trucksRef = FirebaseDatabase.getInstance().getReference("users").child(userId).child("trucks") // Reference the trucks node
 
-            val detailsData = mapOf(
+            val truckId = trucksRef.push().key  // Generate a unique truck ID
+            if (truckId == null) {
+                Toast.makeText(requireContext(), "Error generating truck ID.", Toast.LENGTH_SHORT).show()
+                return
+            }
+
+            val truckData = mapOf(
                 "length" to length,
                 "weight" to weight,
                 "limits" to limits,
@@ -125,7 +131,7 @@ class equipmentlimits : Fragment() {
             )
 
             progressBar.visibility = View.VISIBLE
-            userRef.updateChildren(detailsData)  // Save the data under the user's equipmentDetails node
+            trucksRef.child(truckId).setValue(truckData)  // Save the truck details under the generated truck ID
                 .addOnCompleteListener { task ->
                     progressBar.visibility = View.GONE
 
