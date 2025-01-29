@@ -2,31 +2,40 @@ package com.example.truckers
 
 import android.content.Intent
 import android.os.Bundle
+import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.fragment.app.Fragment
 import com.example.truckers.databinding.FragmentProfileBinding
+import com.example.truckers.databinding.FragmentShipperProfileBinding
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.*
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 
-class Profile : Fragment() {
 
-    private var _binding: FragmentProfileBinding? = null
+class ShipperProfile : Fragment() {
+
+private var _binding:FragmentShipperProfileBinding?=null
     private val binding get() = _binding!!
     private lateinit var auth: FirebaseAuth
     private lateinit var database: DatabaseReference
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout using view binding
-        _binding = FragmentProfileBinding.inflate(inflater, container, false)
+        // Inflate the layout for this fragment
+        _binding = FragmentShipperProfileBinding.inflate(inflater, container, false)
         val root: View = binding.root
-
-        // Initialize FirebaseAuth and DatabaseReference
         auth = FirebaseAuth.getInstance()
         database = FirebaseDatabase.getInstance().reference
 
@@ -101,5 +110,6 @@ class Profile : Fragment() {
         _binding = null
     }
 
-
 }
+
+

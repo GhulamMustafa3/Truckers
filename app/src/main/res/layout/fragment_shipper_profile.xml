@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    tools:context=".Profile">
+    tools:context=".ShipperProfile">
 
     <TextView
         android:layout_width="match_parent"
@@ -110,12 +110,11 @@
         android:id="@+id/Shipper_Broker"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Shipper or Broker"
+        android:text="Driver or Motor Carrier"
         android:layout_marginTop="24dp"
         android:background="@drawable/rectangleshape"
         android:textColor="@color/black"
         android:layout_gravity="center"
         android:gravity="center"
         android:padding="12dp" />
-
 </LinearLayout>

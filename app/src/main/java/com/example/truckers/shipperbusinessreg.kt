@@ -1,61 +1,56 @@
 package com.example.truckers
 
 import android.content.Intent
-
 import android.os.Bundle
-
 import android.view.View
-
 import android.widget.Toast
-
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-
-import com.example.truckers.databinding.ActivityShipperIndividualBinding
-
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import com.example.truckers.databinding.ActivityShipperbusinessregBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 
-
-class ShipperIndividual : AppCompatActivity() {
-
-    private lateinit var binding: ActivityShipperIndividualBinding
-    private lateinit var database: DatabaseReference // Firebase Database Reference
-    private lateinit var auth: FirebaseAuth
-
+class shipperbusinessreg : AppCompatActivity() {
+    lateinit var binding: ActivityShipperbusinessregBinding
+    lateinit var database:DatabaseReference
+    lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding=ActivityShipperIndividualBinding.inflate(layoutInflater)
+        binding=ActivityShipperbusinessregBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         auth = FirebaseAuth.getInstance()
         database = FirebaseDatabase.getInstance().reference
 
         // Set Click Listener for Next Button
-        binding.doneButton.setOnClickListener {
-            val username = binding.usernameInput.text.toString().trim()
+        binding.nextButton.setOnClickListener {
+            val company=binding.companynameInput.text.toString().trim()
+
             val email = binding.emailInput.text.toString().trim()
             val password = binding.passInput.text.toString().trim()
             val phone = binding.phoneInput.text.toString().trim()
 
-            // Validate Inputs
-            if (validateInputs(username, email, password, phone)) {
-                registerUser(username, email, password, phone)
 
+            if (validateInputs(company, email ,password, phone)) {
 
+                registerUser(company,email,password,phone)
 
             }
         }
     }
 
     // Function to validate all inputs
-    private fun validateInputs(username: String, email: String, password: String, phone: String): Boolean {
+    private fun validateInputs(companyName:String, email: String, password: String, phone: String): Boolean {
         return when {
-            username.isEmpty() -> {
-                showToast("Username is required")
+            companyName.isEmpty()->{
+                showToast("Company Name is Required")
                 false
             }
+
             email.isEmpty() -> {
                 showToast("Email is required")
                 false
@@ -84,8 +79,11 @@ class ShipperIndividual : AppCompatActivity() {
         }
     }
 
-    // Function to register a user with Firebase Authentication
-    private fun registerUser(username: String, email: String, password: String, phone: String) {
+    // Function to show a Toast message
+    private fun showToast(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+    }
+    private fun registerUser(company:String, email: String, password: String, phone: String) {
         // Show progress bar
         binding.progressBar.visibility = View.VISIBLE
 
@@ -95,7 +93,7 @@ class ShipperIndividual : AppCompatActivity() {
                 binding.progressBar.visibility = View.GONE
                 if (task.isSuccessful) {
                     // Save user details to Realtime Database
-                    saveToFirebase(username, email, phone)
+                    saveToFirebase(company, email, phone)
 
 
                 } else {
@@ -105,11 +103,11 @@ class ShipperIndividual : AppCompatActivity() {
     }
 
     // Function to save user data to Firebase Realtime Database
-    private fun saveToFirebase(username: String, email: String, phone: String) {
+    private fun saveToFirebase(company:String, email: String, phone: String) {
         val userId = auth.currentUser?.uid ?: return
 
         val user = mapOf(
-            "username" to username,
+            "company" to company,
             "email" to email,
             "phone" to phone
         )
@@ -126,9 +124,4 @@ class ShipperIndividual : AppCompatActivity() {
             }
     }
 
-    // Function to show a Toast message
-    private fun showToast(message: String) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
-    }
-    }
-
+}

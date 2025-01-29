@@ -1,5 +1,6 @@
 package com.example.truckers
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
@@ -9,6 +10,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 
 class Selection : AppCompatActivity() {
+    @SuppressLint("SuspiciousIndentation")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -36,12 +38,14 @@ class Selection : AppCompatActivity() {
             if (userType == "Driver") {
                 business.setOnClickListener{
                     val intent= Intent(this,businessregis::class.java)
+                    intent.putExtra("userType", "Driver")
                     startActivity(intent)
                 }
 
             } else if (userType == "Shipper") {
                 business.setOnClickListener{
-                    val intent= Intent(this,businessregis::class.java)
+                    val intent= Intent(this,shipperbusinessreg::class.java)
+                    intent.putExtra("userType", "Shipper")
                     startActivity(intent)
                 }
 

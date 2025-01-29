@@ -5,25 +5,25 @@
         android:title="Loads"
         android:icon="@drawable/baseline_density_small_24"/>
     <item
-        android:id="@+id/myload"
-        android:title="MyLoads"
+        android:id="@+id/Searchload"
+        android:title="Search Load"
+        android:icon="@drawable/baseline_search_24"
+        />
+    <item
+        android:id="@+id/postload"
+        android:title="Post Load"
         android:icon="@drawable/loadedtruck"
-     />
+        />
     <item
-        android:id="@+id/mytruck"
-        android:title="My Truck"
+        android:id="@+id/SearchTruck"
+        android:title="Search Truck"
         android:icon="@drawable/mytruck"
-       />
-    <item
-        android:id="@+id/Chats"
-        android:title="Chats"
-        android:icon="@drawable/baseline_chat_bubble_24"
         />
     <item
         android:id="@+id/profile"
         android:title="Profile"
 
         android:icon="@drawable/profile"
-      />
+        />
 
 </menu>
