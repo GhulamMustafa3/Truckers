@@ -1,7 +1,7 @@
 package com.example.truckers
 
 data class truckdata(
-    val username: String ?= null,
+
     val origin: String ?= null,
     val destination: String ?= null,
     val weight: String ?= null,
