@@ -34,8 +34,11 @@ class truckroutes : Fragment() {
     private var savedDestination: String? = null
     private var savedStartDate: String? = null
     private var savedEndDate: String? = null
-    private var routeId: String? = null
+
+    var truckId:String ? = null
     private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var Preferences: SharedPreferences
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -50,7 +53,8 @@ class truckroutes : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        Preferences = requireContext().getSharedPreferences("TruckPrefs", MODE_PRIVATE)
+        truckId = Preferences.getString("TRUCK_ID", null)
         // Initialize the views
         originInput = view.findViewById(R.id.orign_input)
         destinationInput = view.findViewById(R.id.des_input)
@@ -171,10 +175,10 @@ class truckroutes : Fragment() {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     if (snapshot.exists()) {
                         // Assuming the user has only one truck, you can get the first truck's ID
-                        val truckId = snapshot.children.first().key // Get the first truck's ID
+
 
                         if (truckId != null) {
-                            val truckRef = userRef.child("trucks").child(truckId)
+                            val truckRef = userRef.child("trucks").child(truckId!!)
 
                             val routeData = mapOf(
                                 "origin" to origin,

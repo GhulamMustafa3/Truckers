@@ -140,7 +140,10 @@ class equipmentlimits : Fragment() {
                         sharedPreferences.edit()
                             .putBoolean("equipmentDetailsComplete", true)
                             .apply()
-
+                        val Preferences = requireContext().getSharedPreferences("TruckPrefs", MODE_PRIVATE)
+                            Preferences.edit()
+                            .putString("TRUCK_ID", truckId)  // Save the truck ID
+                            .apply()
                         navigateToFragment(truckroutes())
                     } else {
                         Toast.makeText(requireContext(), "Failed to save data. Please try again.", Toast.LENGTH_SHORT).show()
