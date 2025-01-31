@@ -3,14 +3,43 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/white"
     tools:context=".loadboard">
+
 
 
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="30dp"
+        android:background="@color/gray"
+        android:fontFamily="@font/robotoitalic"
+        android:padding="20dp"
+        android:text="LoadBoard" />
+
+    <ImageView
+        android:layout_marginTop="130dp"
+        android:layout_width="wrap_content"
+        android:layout_height="200dp"
+        android:src="@drawable/loadsdefault"
+        android:id="@+id/no_loads_image"
+        android:visibility="visible"
+        android:layout_gravity="center" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="No Loads To Show "
         android:layout_gravity="center"
-        android:gravity="center"
-        android:textSize="20dp"
-        android:text="LOARDBOARD" />
+        android:textSize="28dp"
+        android:id="@+id/no_loads_text"
+        android:visibility="visible" />
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/load_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        tools:listitem="@layout/fragment_truckcard"
+        android:visibility="gone" />
 </LinearLayout>

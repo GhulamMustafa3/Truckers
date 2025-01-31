@@ -5,28 +5,26 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [loadboard.newInstance] factory method to
- * create an instance of this fragment.
- */
 class loadboard : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+    private lateinit var noLoadsImage: ImageView
+    private lateinit var noLoadsText: TextView
+    private lateinit var  recyclerView: RecyclerView
+    private lateinit var loadarraylist:ArrayList<loaddata>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
+
     }
 
     override fun onCreateView(
@@ -34,26 +32,71 @@ class loadboard : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_loadboard, container, false)
+        val view= inflater.inflate(R.layout.fragment_loadboard, container, false)
+        recyclerView = view.findViewById(R.id.load_recycler_view)
+        noLoadsImage = view.findViewById(R.id.no_loads_image)
+        noLoadsText = view.findViewById(R.id.no_loads_text)
+        // Initialize Firebase Database
+
+
+        // Setup RecyclerView
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
+
+        recyclerView.setHasFixedSize(true)
+        loadarraylist= arrayListOf<loaddata>()
+
+        loaddata()
+        return view
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment loadboard.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            loadboard().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+
+
+    private fun loaddata() {
+        val database = FirebaseDatabase.getInstance().getReference("shippers")
+
+        database.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                loadarraylist.clear() // Clear the existing list before adding new data
+
+                if (snapshot.exists()) {
+                    for (userSnapshot in snapshot.children) { // Loop through all users
+                        val loadsRef = userSnapshot.child("loaddetails") // Get loaddetails for each user
+
+                        for (loadSnap in loadsRef.children) {
+                            val loaddetail = loadSnap.getValue(loaddata::class.java)
+                            if (loaddetail != null) {
+                                loadarraylist.add(loaddetail)
+                            }
+                        }
+                    }
+
+                    // Set the adapter with the updated truck list
+                    recyclerView.adapter = loadcardadapter(loadarraylist)
+
+                    // Update visibility based on data availability
+                    if (loadarraylist.isNotEmpty()) {
+                        recyclerView.visibility = View.VISIBLE
+                        noLoadsImage.visibility = View.GONE
+                        noLoadsText.visibility = View.GONE
+                    } else {
+                        recyclerView.visibility = View.GONE
+                        noLoadsImage.visibility = View.VISIBLE
+                        noLoadsText.visibility = View.VISIBLE
+                    }
+                } else {
+                    // Handle the case where no loads are available
+                    recyclerView.visibility = View.GONE
+                    noLoadsImage.visibility = View.VISIBLE
+                    noLoadsText.visibility = View.VISIBLE
                 }
             }
+
+            override fun onCancelled(error: DatabaseError) {
+                // Handle any errors during data retrieval
+            }
+        })
     }
+
+
+
 }
