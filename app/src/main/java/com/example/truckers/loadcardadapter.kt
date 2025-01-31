@@ -18,12 +18,12 @@ class loadcardadapter(private val loadlist:ArrayList<loaddata>):RecyclerView.Ada
 
     override fun onBindViewHolder(holder: loadcardadapter.loadViewHolder, position: Int) {
         val load=loadlist[position]
-        holder.source.text=load.origin
+        holder.origin.text=load.origin
         holder.destination.text=load.destination
         holder.weight.text=load.weight
         holder.length.text=load.length
         holder.loadType.text=load.limits
-        holder.pickupdate.text=load.pickupdate
+        holder.pickupDate.text=load.pickupDate
         holder.price.text=load.price
         
     }
@@ -31,12 +31,12 @@ class loadcardadapter(private val loadlist:ArrayList<loaddata>):RecyclerView.Ada
     override fun getItemCount(): Int=loadlist.size
     
     class loadViewHolder(itemView:View):RecyclerView.ViewHolder(itemView){
-        val source = itemView.findViewById<TextView>(R.id.source)
+        val origin = itemView.findViewById<TextView>(R.id.origin)
         val destination = itemView.findViewById<TextView>(R.id.destination)
         val weight = itemView.findViewById<TextView>(R.id.weight)
-        val length = itemView.findViewById<TextView>(R.id.length)
+        val length = itemView.findViewById<TextView>(R.id.dimension)
         val loadType = itemView.findViewById<TextView>(R.id.load_type)
-        val pickupdate=itemView.findViewById<TextView>(R.id.date)
+        val pickupDate=itemView.findViewById<TextView>(R.id.date)
         val price=itemView.findViewById<TextView>(R.id.price)
 
 

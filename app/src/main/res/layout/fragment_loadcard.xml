@@ -62,7 +62,7 @@
                         android:src="@drawable/fillrec" />
 
                     <TextView
-                        android:id="@+id/source"
+                        android:id="@+id/origin"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"

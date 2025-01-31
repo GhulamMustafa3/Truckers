@@ -6,6 +6,6 @@ data class loaddata(
     val weight: String ?= null,
     val length: String ?= null,
     val limits: String ?= null,
-    val pickupdate:String?=null,
+    val pickupDate:String?=null,
     val price:String?=null
 )
