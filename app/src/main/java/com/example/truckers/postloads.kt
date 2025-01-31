@@ -5,28 +5,22 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [postloads.newInstance] factory method to
- * create an instance of this fragment.
- */
+
 class postloads : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
+    private lateinit var noLoadsImage: ImageView
+    private lateinit var noLoadsText: TextView
+    private lateinit var  recyclerView: RecyclerView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
+
     }
 
     override fun onCreateView(
@@ -34,26 +28,34 @@ class postloads : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_postloads, container, false)
+        val view= inflater.inflate(R.layout.fragment_postloads, container, false)
+        recyclerView = view.findViewById(R.id.truck_recycler_view)
+
+        val addloadButton: FloatingActionButton = view.findViewById(R.id.add_load)
+        noLoadsImage = view.findViewById(R.id.no_loads_image)
+        noLoadsText = view.findViewById(R.id.no_loads_text)
+        // Initialize Firebase Database
+
+
+        // Setup RecyclerView
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
+
+        recyclerView.setHasFixedSize(true)
+        addloadButton.setOnClickListener{
+            openloadDetailsFragment()
+        }
+
+        return view
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment postloads.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            postloads().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+    private fun openloadDetailsFragment() {
+        val loadDetailsFragment = loaddetailsform()
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.container, loadDetailsFragment) // Ensure this ID matches your container
+            .addToBackStack(null) // Adds the transaction to the back stack for navigation
+            .commit()
     }
+
+
+
 }

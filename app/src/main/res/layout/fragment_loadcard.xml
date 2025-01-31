@@ -18,38 +18,21 @@
 
         <RelativeLayout
             android:layout_width="370dp"
+            android:paddingTop="20dp"
             android:layout_height="200dp">
 
             <!-- Company Name -->
-            <TextView
-                android:id="@+id/company_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="10dp"
-                android:text="Trucker Company Ltd"
-                android:textColor="#000000"
-                android:textSize="16sp" />
+
 
             <!-- Time -->
-            <TextView
-                android:id="@+id/time"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="30dp"
-                android:text="2h 40min"
-                android:textColor="#000000"
-                android:textSize="14sp" />
+
 
             <!-- Truck Icon -->
             <ImageView
                 android:id="@+id/truck_icon"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:layout_below="@id/company_name"
+
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="10dp"
                 android:src="@drawable/truck" />
@@ -59,7 +42,7 @@
                 android:id="@+id/srcdescontainer"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/company_name"
+
                 android:layout_marginStart="10dp"
                 android:layout_toEndOf="@id/truck_icon"
                 android:orientation="vertical">
@@ -135,7 +118,7 @@
                 android:id="@+id/price"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/time"
+
                 android:layout_alignParentEnd="true"
                 android:layout_marginTop="20dp"
                 android:layout_marginEnd="50dp"
@@ -180,15 +163,7 @@
                     android:textColor="@color/black"
                     android:textSize="14sp" />
 
-                <TextView
-                    android:id="@+id/distance"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="30dp"
-                    android:layout_weight="1"
-                    android:text="200km"
-                    android:textColor="#888888"
-                    android:textSize="14sp" />
+
             </LinearLayout>
         </RelativeLayout>
     </androidx.cardview.widget.CardView>

@@ -1,0 +1,434 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:padding="20dp"
+    tools:context=".loaddetailsform">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="20dp"
+        android:fitsSystemWindows="true"
+        android:orientation="vertical">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal"
+        android:weightSum="2">
+    <com.google.android.material.textfield.TextInputLayout
+
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:layout_weight="1"
+        android:hint="Origin"
+        app:boxBackgroundColor="@color/white"
+        app:boxBackgroundMode="outline"
+
+        app:boxStrokeColor="#0E0E0F"
+        app:boxStrokeWidth="1dp"
+        app:boxStrokeWidthFocused="2dp"
+
+
+        app:endIconMode="clear_text"
+        app:helperText="Required"
+        app:helperTextTextColor="@color/red"
+        >
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/orign_input"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:inputType="textPersonName"
+
+            android:padding="12dp" />
+    </com.google.android.material.textfield.TextInputLayout>
+    <com.google.android.material.textfield.TextInputLayout
+
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:hint="Destination"
+        android:layout_weight="1"
+        app:boxBackgroundColor="@color/white"
+        app:boxBackgroundMode="outline"
+
+        app:boxStrokeColor="#0E0E0F"
+        app:boxStrokeWidth="1dp"
+        app:boxStrokeWidthFocused="2dp"
+
+
+        app:endIconMode="clear_text"
+        app:helperText="Required"
+        app:helperTextTextColor="@color/red"
+        >
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/des_input"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:inputType="textPersonName"
+
+            android:padding="12dp" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="1dp"
+        android:weightSum="2">
+        <com.google.android.material.textfield.TextInputLayout
+
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:hint="Material Type"
+            android:layout_weight="1"
+            app:boxBackgroundColor="@color/white"
+            app:boxBackgroundMode="outline"
+
+            app:boxStrokeColor="#0E0E0F"
+            app:boxStrokeWidth="1dp"
+            app:boxStrokeWidthFocused="2dp"
+
+
+            app:endIconMode="clear_text"
+            app:helperText="Required"
+            app:helperTextTextColor="@color/red"
+            >
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/material_input"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:inputType="textPersonName"
+
+                android:padding="12dp" />
+        </com.google.android.material.textfield.TextInputLayout>
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:boxBackgroundColor="@color/white"
+            app:boxBackgroundMode="outline"
+            android:layout_marginTop="30dp"
+            android:hint="Phone"
+            app:counterEnabled="true"
+            app:counterMaxLength="10"
+            app:endIconMode="clear_text"
+            app:prefixText="+92"
+            android:layout_weight="1"
+            app:helperText="Required"
+            app:helperTextTextColor="@color/red"
+            app:startIconDrawable="@drawable/baseline_phone_in_talk_24">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/phone_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:maxLength="10"
+                android:padding="12dp" />
+        </com.google.android.material.textfield.TextInputLayout>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal"
+        android:weightSum="2">
+        <!-- Pickup Date -->
+        <com.google.android.material.textfield.TextInputLayout
+
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:hint="PickUp Date"
+            app:boxBackgroundColor="@color/white"
+            app:boxBackgroundMode="outline"
+
+            app:boxStrokeColor="#0E0E0F"
+            app:boxStrokeWidth="1dp"
+            app:boxStrokeWidthFocused="2dp"
+
+
+            app:endIconMode="clear_text"
+            app:helperText="Required"
+            app:helperTextTextColor="@color/red"
+            >
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/pickupdateinput"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:inputType="textPersonName"
+                android:clickable="false"
+                android:focusable="false"
+                android:drawableEnd="@drawable/baseline_arrow_forward_ios_24"
+                android:padding="12dp" />
+        </com.google.android.material.textfield.TextInputLayout>
+        <com.google.android.material.textfield.TextInputLayout
+
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:hint="Dropoff Date"
+            app:boxBackgroundColor="@color/white"
+            app:boxBackgroundMode="outline"
+
+            app:boxStrokeColor="#0E0E0F"
+            app:boxStrokeWidth="1dp"
+            app:boxStrokeWidthFocused="2dp"
+
+
+            app:endIconMode="clear_text"
+            app:helperText="Required"
+            app:helperTextTextColor="@color/red"
+            >
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/dropoffdateinput"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:inputType="textPersonName"
+                android:clickable="false"
+                android:focusable="false"
+                android:drawableEnd="@drawable/baseline_arrow_forward_ios_24"
+                android:padding="12dp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+    </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+
+
+            <!-- Pickup Time -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="Pickup Time"
+                app:boxBackgroundColor="@color/white"
+                app:boxBackgroundMode="outline"
+                app:boxStrokeColor="#0E0E0F"
+                app:boxStrokeWidth="1dp"
+                app:boxStrokeWidthFocused="2dp"
+                app:endIconMode="clear_text"
+                app:helperText="Required"
+                app:helperTextTextColor="@color/red">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/pickuptime_input"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:inputType="text"
+                    android:focusable="false"
+                    android:clickable="false"
+                    android:drawableEnd="@drawable/baseline_arrow_forward_ios_24"
+                    android:padding="12dp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Dropoff Time -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="Dropoff Time"
+                app:boxBackgroundColor="@color/white"
+                app:boxBackgroundMode="outline"
+                app:boxStrokeColor="#0E0E0F"
+                app:boxStrokeWidth="1dp"
+                app:boxStrokeWidthFocused="2dp"
+                app:endIconMode="clear_text"
+                app:helperText="Required"
+                app:helperTextTextColor="@color/red">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/droptime_input"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:focusable="false"
+                    android:clickable="false"
+                    android:drawableEnd="@drawable/baseline_arrow_forward_ios_24"
+                    android:inputType="text"
+                    android:padding="12dp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="20dp"
+            android:weightSum="2">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:hint="Length"
+                app:boxBackgroundMode="outline"
+                app:helperText="required"
+                app:prefixText="Feet"
+                app:helperTextTextColor="@color/red"
+                app:boxStrokeColor="#0E0E0F">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/length_input"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="12dp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:hint="Weight"
+                app:helperText="required"
+                app:prefixText="KG"
+                app:helperTextTextColor="@color/red"
+                app:boxBackgroundMode="outline"
+                app:boxStrokeColor="#0E0E0F">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/weight_input"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="12dp" />
+            </com.google.android.material.textfield.TextInputLayout>
+        </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="1dp"
+        android:weightSum="2">
+        <com.google.android.material.textfield.TextInputLayout
+
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:layout_weight="1"
+            android:hint="Equipment Limits(FULL/PARTIAL"
+            app:boxBackgroundColor="@color/white"
+            app:boxBackgroundMode="outline"
+
+            app:boxStrokeColor="#0E0E0F"
+            app:boxStrokeWidth="1dp"
+            app:boxStrokeWidthFocused="2dp"
+
+            app:endIconMode="clear_text"
+            app:helperText="Required"
+            app:helperTextTextColor="@color/red"
+            >
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/limits_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPersonName"
+
+
+
+                android:padding="12dp" />
+        </com.google.android.material.textfield.TextInputLayout>
+        <com.google.android.material.textfield.TextInputLayout
+
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:layout_weight="1"
+            android:hint="Truck Type"
+            app:boxBackgroundColor="@color/white"
+            app:boxBackgroundMode="outline"
+
+            app:boxStrokeColor="#0E0E0F"
+            app:boxStrokeWidth="1dp"
+            app:boxStrokeWidthFocused="2dp"
+
+
+            app:endIconMode="clear_text"
+            app:helperText="Required"
+            app:helperTextTextColor="@color/red"
+            >
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/Ttype_input"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:inputType="textPersonName"
+
+                android:padding="12dp" />
+        </com.google.android.material.textfield.TextInputLayout>
+    </LinearLayout>
+        <com.google.android.material.textfield.TextInputLayout
+
+            android:layout_width="match_parent"
+
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:hint="Price"
+            app:boxBackgroundColor="@color/white"
+            app:boxBackgroundMode="outline"
+            app:prefixText="Rs:"
+            app:boxStrokeColor="#0E0E0F"
+            app:boxStrokeWidth="1dp"
+            app:boxStrokeWidthFocused="2dp"
+
+
+            app:endIconMode="clear_text"
+            app:helperText="Required"
+            app:helperTextTextColor="@color/red"
+            >
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/priceInput"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:inputType="textPersonName"
+
+
+                android:padding="12dp" />
+        </com.google.android.material.textfield.TextInputLayout>
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            android:indeterminate="true" />
+
+        <!-- Next Button -->
+        <Button
+            android:id="@+id/next_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Done"
+            android:layout_marginTop="24dp"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:padding="12dp"
+            android:textColor="@color/black"
+            app:backgroundTint="@null"
+            android:background="@drawable/rectangleshape" />
+
+
+    </LinearLayout>
+</ScrollView>

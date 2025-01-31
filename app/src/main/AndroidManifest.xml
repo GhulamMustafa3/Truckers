@@ -48,14 +48,7 @@
         <activity
             android:name=".forgotpass"
             android:exported="false" />
-        <activity
-            android:name=".TrucRoutes"
-            android:exported="false"
-            android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar" />
-        <activity
-            android:name=".EquipLimits"
-            android:exported="false"
-            android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar" />
+
         <activity
             android:name=".Login"
             android:exported="false"
@@ -72,18 +65,7 @@
         <activity
             android:name=".DriverLisence"
             android:exported="false" />
-        <activity
-            android:name=".VehicleCertificate"
-            android:exported="false" />
-        <activity
-            android:name=".vehiclephoto"
-            android:exported="false" />
-        <activity
-            android:name=".registrationinfo"
-            android:exported="false" />
-        <activity
-            android:name=".vehicleinfo"
-            android:exported="false" />
+
         <activity
             android:name=".CNIC"
             android:exported="false" />
