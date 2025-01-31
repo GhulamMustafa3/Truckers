@@ -10,6 +10,11 @@ import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 
 
 class searchtruck : Fragment() {
@@ -31,7 +36,7 @@ class searchtruck : Fragment() {
 
         val view= inflater.inflate(R.layout.fragment_searchtruck, container, false)
 
-        recyclerView = view.findViewById(R.id.searchtruck_recycler_view)
+        recyclerView = view.findViewById(R.id.truck_recycler_view)
 
 
         noLoadsImage = view.findViewById(R.id.no_loads_image)
@@ -46,10 +51,60 @@ class searchtruck : Fragment() {
 
         truckarraylist= arrayListOf<truckdata> ()
         // Fetch truck data from Firebase
-
+        loaddata()
 
         return view
     }
+    private fun loaddata() {
+
+            val database = FirebaseDatabase.getInstance().getReference("users")
+
+            // Reference the user's trucks node
+
+
+            database.addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    truckarraylist.clear() // Clear the existing list before adding new data
+
+                    if (snapshot.exists()) {
+                        for (usersnap in snapshot.children) {
+                            val truckref=usersnap.child("trucks")
+                            for(trucksnap in truckref.children) {
+                                val truckdetail = trucksnap.getValue(truckdata::class.java)
+                                if (truckdetail != null) {
+                                    truckarraylist.add(truckdetail)
+                                }
+                            }
+                        }
+
+                        // Set the adapter with the updated truck list
+                        recyclerView.adapter = TruckCardAdapter(truckarraylist)
+
+                        // Update visibility based on data availability
+                        if (truckarraylist.isNotEmpty()) {
+                            recyclerView.visibility = View.VISIBLE
+                            noLoadsImage.visibility = View.GONE
+                            noLoadsText.visibility = View.GONE
+                        } else {
+                            recyclerView.visibility = View.GONE
+                            noLoadsImage.visibility = View.VISIBLE
+                            noLoadsText.visibility = View.VISIBLE
+                        }
+                    } else {
+                        // Handle the case where no trucks are available
+                        recyclerView.visibility = View.GONE
+                        noLoadsImage.visibility = View.VISIBLE
+                        noLoadsText.visibility = View.VISIBLE
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    // Handle any errors during data retrieval
+
+                }
+            })
+        }
+
 
 
 }
