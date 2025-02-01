@@ -1,14 +1,250 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="20dp"
+    android:orientation="vertical"
     tools:context=".searchload">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Search Loads" />
+    <com.google.android.material.textfield.TextInputLayout
 
-</FrameLayout>
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:hint="Origin"
+        app:boxBackgroundColor="@color/white"
+        app:boxBackgroundMode="outline"
+
+        app:boxStrokeColor="#0E0E0F"
+        app:boxStrokeWidth="1dp"
+        app:boxStrokeWidthFocused="2dp"
+
+
+        app:endIconMode="clear_text"
+        app:helperText="Required"
+        app:helperTextTextColor="@color/red"
+        >
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/orign_input"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:inputType="textPersonName"
+
+            android:padding="12dp" />
+    </com.google.android.material.textfield.TextInputLayout>
+    <com.google.android.material.textfield.TextInputLayout
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:hint="Destination"
+        app:boxBackgroundColor="@color/white"
+        app:boxBackgroundMode="outline"
+
+        app:boxStrokeColor="#0E0E0F"
+        app:boxStrokeWidth="1dp"
+        app:boxStrokeWidthFocused="2dp"
+
+
+        app:endIconMode="clear_text"
+        app:helperText="Required"
+        app:helperTextTextColor="@color/red"
+        >
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/des_input"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:inputType="textPersonName"
+
+            android:padding="12dp" />
+    </com.google.android.material.textfield.TextInputLayout>
+    <com.google.android.material.textfield.TextInputLayout
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:hint="Start Date"
+        app:boxBackgroundColor="@color/white"
+        app:boxBackgroundMode="outline"
+
+        app:boxStrokeColor="#0E0E0F"
+        app:boxStrokeWidth="1dp"
+        app:boxStrokeWidthFocused="2dp"
+
+
+        app:endIconMode="clear_text"
+        app:helperText="Required"
+        app:helperTextTextColor="@color/red"
+        >
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/sdateinput"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:inputType="textPersonName"
+            android:clickable="false"
+            android:focusable="false"
+            android:drawableEnd="@drawable/baseline_arrow_forward_ios_24"
+            android:padding="12dp" />
+    </com.google.android.material.textfield.TextInputLayout>
+    <com.google.android.material.textfield.TextInputLayout
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:hint="End Date"
+        app:boxBackgroundColor="@color/white"
+        app:boxBackgroundMode="outline"
+
+        app:boxStrokeColor="#0E0E0F"
+        app:boxStrokeWidth="1dp"
+        app:boxStrokeWidthFocused="2dp"
+
+
+        app:endIconMode="clear_text"
+        app:helperText="Required"
+        app:helperTextTextColor="@color/red"
+        >
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edate_input"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:inputType="textPersonName"
+            android:clickable="false"
+            android:focusable="false"
+            android:drawableEnd="@drawable/baseline_arrow_forward_ios_24"
+            android:padding="12dp" />
+    </com.google.android.material.textfield.TextInputLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="20dp"
+        android:weightSum="2">
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:hint="Length"
+            app:boxBackgroundMode="outline"
+            app:helperText="required"
+            app:prefixText="Feet"
+            app:helperTextTextColor="@color/red"
+            app:boxStrokeColor="#0E0E0F">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/length_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="12dp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:hint="Weight"
+            app:helperText="required"
+            app:prefixText="KG"
+            app:helperTextTextColor="@color/red"
+            app:boxBackgroundMode="outline"
+            app:boxStrokeColor="#0E0E0F">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/weight_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="12dp" />
+        </com.google.android.material.textfield.TextInputLayout>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="1dp"
+        android:weightSum="2">
+        <com.google.android.material.textfield.TextInputLayout
+
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:layout_weight="1"
+            android:hint="Equipment Limits(FULL/PARTIAL"
+            app:boxBackgroundColor="@color/white"
+            app:boxBackgroundMode="outline"
+
+            app:boxStrokeColor="#0E0E0F"
+            app:boxStrokeWidth="1dp"
+            app:boxStrokeWidthFocused="2dp"
+
+            app:endIconMode="clear_text"
+            app:helperText="Required"
+            app:helperTextTextColor="@color/red"
+            >
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/limits_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPersonName"
+
+
+
+                android:padding="12dp" />
+        </com.google.android.material.textfield.TextInputLayout>
+        <com.google.android.material.textfield.TextInputLayout
+
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:layout_weight="1"
+            android:hint="Truck Type"
+            app:boxBackgroundColor="@color/white"
+            app:boxBackgroundMode="outline"
+
+            app:boxStrokeColor="#0E0E0F"
+            app:boxStrokeWidth="1dp"
+            app:boxStrokeWidthFocused="2dp"
+
+
+            app:endIconMode="clear_text"
+            app:helperText="Required"
+            app:helperTextTextColor="@color/red"
+            >
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/Ttype_input"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:inputType="textPersonName"
+
+                android:padding="12dp" />
+        </com.google.android.material.textfield.TextInputLayout>
+    </LinearLayout>
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_gravity="center"
+        android:indeterminate="true"
+        style="?android:attr/progressBarStyleLarge" />
+    <Button
+        android:id="@+id/search_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Search"
+        android:layout_gravity="center"
+        android:layout_marginTop="24dp"
+        android:background="@drawable/rectangleshape"
+        android:textColor="@color/black"
+        android:padding="12dp" />
+
+
+</LinearLayout>

@@ -21,6 +21,8 @@ class loadboard : Fragment() {
     private lateinit var noLoadsText: TextView
     private lateinit var  recyclerView: RecyclerView
     private lateinit var loadarraylist:ArrayList<loaddata>
+    private lateinit var advancedfilter:TextView
+    private lateinit var refresh:ImageView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,9 +38,20 @@ class loadboard : Fragment() {
         recyclerView = view.findViewById(R.id.load_recycler_view)
         noLoadsImage = view.findViewById(R.id.no_loads_image)
         noLoadsText = view.findViewById(R.id.no_loads_text)
+        advancedfilter=view.findViewById(R.id.searchfilter)
+        refresh=view.findViewById(R.id.refresh)
+
         // Initialize Firebase Database
 
+advancedfilter.setOnClickListener{
+    requireActivity().supportFragmentManager.beginTransaction()
+        .replace(R.id.container, searchload()) // Replace container with the new fragment
+        .addToBackStack(null) // Add to back stack if needed
+        .commit()
+}
+        refresh.setOnClickListener{
 
+        }
         // Setup RecyclerView
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
