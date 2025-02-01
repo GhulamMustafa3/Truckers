@@ -50,7 +50,8 @@ advancedfilter.setOnClickListener{
         .commit()
 }
         refresh.setOnClickListener{
-
+            arguments = null // Clear filters
+            loaddata()
         }
         // Setup RecyclerView
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
@@ -69,11 +70,11 @@ advancedfilter.setOnClickListener{
 
         database.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                loadarraylist.clear() // Clear the existing list before adding new data
+                loadarraylist.clear() // Clear previous data
 
                 if (snapshot.exists()) {
-                    for (userSnapshot in snapshot.children) { // Loop through all users
-                        val loadsRef = userSnapshot.child("loaddetails") // Get loaddetails for each user
+                    for (userSnapshot in snapshot.children) {
+                        val loadsRef = userSnapshot.child("loaddetails")
 
                         for (loadSnap in loadsRef.children) {
                             val loaddetail = loadSnap.getValue(loaddata::class.java)
@@ -83,46 +84,34 @@ advancedfilter.setOnClickListener{
                         }
                     }
 
-                    // Set the adapter with the updated truck list
-                    recyclerView.adapter = loadcardadapter(loadarraylist)
+                    var displayedList = ArrayList(loadarraylist) // Default list
 
-                    // Handle item click to open LoadDetailsFragment
-                    (recyclerView.adapter as loadcardadapter).setOnItemClickListener(object : loadcardadapter.onItemClickListener {
+                    // Apply filters if arguments exist
+                    arguments?.let {
+                        displayedList = loadarraylist.filter { load ->
+                            (it.getString("origin").isNullOrEmpty() || load.origin == it.getString("origin")) &&
+                                    (it.getString("destination").isNullOrEmpty() || load.destination == it.getString("destination")) &&
+                                    (it.getString("startDate").isNullOrEmpty() || load.pickupDate == it.getString("startDate")) &&
+                                    (it.getString("endDate").isNullOrEmpty() || load.dropoffDate == it.getString("endDate")) &&
+                                    (it.getString("length").isNullOrEmpty() || load.length == it.getString("length")) &&
+                                    (it.getString("weight").isNullOrEmpty() || load.weight == it.getString("weight")) &&
+                                    (it.getString("limits").isNullOrEmpty() || load.limits == it.getString("limits")) &&
+                                    (it.getString("truckType").isNullOrEmpty() || load.truckType == it.getString("truckType"))
+                        } as ArrayList<loaddata>
+                    }
+
+                    // Set adapter with displayed list
+                    val adapter = loadcardadapter(displayedList)
+                    recyclerView.adapter = adapter
+
+                    adapter.setOnItemClickListener(object : loadcardadapter.onItemClickListener {
                         override fun onItemClick(position: Int) {
-                            // Get the selected load details
-                            val selectedLoad = loadarraylist[position]
-
-                            // Create a bundle and add selected load details to it
-                            val bundle = Bundle().apply {
-                                putString("destination", selectedLoad.destination)
-                                putString("dropoffDate", selectedLoad.dropoffDate)
-                                putString("dropoffTime", selectedLoad.dropoffTime)
-                                putString("length", selectedLoad.length)
-                                putString("limits", selectedLoad.limits)
-                                putString("material", selectedLoad.material)
-                                putString("origin", selectedLoad.origin)
-                                putString("phone", selectedLoad.phone)
-                                putString("pickupDate", selectedLoad.pickupDate)
-                                putString("pickupTime", selectedLoad.pickupTime)
-                                putString("price", selectedLoad.price)
-                                putString("truckType", selectedLoad.truckType)
-                            }
-
-                            // Pass the bundle to LoadCompletedDetailsFragment
-                            val loadCompletedDetailsFragment = loadcompletedetails().apply {
-                                arguments = bundle
-                            }
-
-                            // Perform the fragment transaction
-                            requireActivity().supportFragmentManager.beginTransaction()
-                                .replace(R.id.container, loadCompletedDetailsFragment) // Replace container with the new fragment
-                                .addToBackStack(null) // Add to back stack if needed
-                                .commit()
+                            openLoadCompleteDetails(displayedList[position])
                         }
                     })
 
-                    // Update visibility based on data availability
-                    if (loadarraylist.isNotEmpty()) {
+                    // Handle visibility based on list size
+                    if (displayedList.isNotEmpty()) {
                         recyclerView.visibility = View.VISIBLE
                         noLoadsImage.visibility = View.GONE
                         noLoadsText.visibility = View.GONE
@@ -132,18 +121,43 @@ advancedfilter.setOnClickListener{
                         noLoadsText.visibility = View.VISIBLE
                     }
                 } else {
-                    // Handle the case where no loads are available
                     recyclerView.visibility = View.GONE
                     noLoadsImage.visibility = View.VISIBLE
                     noLoadsText.visibility = View.VISIBLE
                 }
             }
 
-            override fun onCancelled(error: DatabaseError) {
-                // Handle any errors during data retrieval
-            }
+            override fun onCancelled(error: DatabaseError) {}
         })
     }
+
+    private fun openLoadCompleteDetails(load: loaddata) {
+        val bundle = Bundle().apply {
+            putString("destination", load.destination)
+            putString("dropoffDate", load.dropoffDate)
+            putString("dropoffTime", load.dropoffTime)
+            putString("length", load.length)
+            putString("limits", load.limits)
+            putString("material", load.material)
+            putString("origin", load.origin)
+            putString("phone", load.phone)
+            putString("pickupDate", load.pickupDate)
+            putString("pickupTime", load.pickupTime)
+            putString("price", load.price)
+            putString("truckType", load.truckType)
+        }
+
+        val loadCompletedDetailsFragment = loadcompletedetails().apply {
+            arguments = bundle
+        }
+
+        requireActivity().supportFragmentManager.beginTransaction()
+            .replace(R.id.container, loadCompletedDetailsFragment) // Ensure this ID exists
+            .addToBackStack(null)
+            .commit()
+    }
+
+
 
 
 

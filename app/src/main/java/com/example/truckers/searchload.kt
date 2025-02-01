@@ -57,9 +57,28 @@ class searchload : Fragment() {
       endDate.setOnClickListener{
           showDatePicker2()
       }
-      search.setOnClickListener{
+       search.setOnClickListener {
+           val bundle = Bundle().apply {
+               putString("origin", originInput.text.toString())
+               putString("destination", destinationInput.text.toString())
+               putString("startDate", startDate.text.toString())
+               putString("endDate", endDate.text.toString())
+               putString("length", length.text.toString())
+               putString("weight", weight.text.toString())
+               putString("limits", eqlimits.text.toString())
+               putString("truckType", trucktype.text.toString())
+           }
 
-      }
+           val loadBoardFragment = loadboard().apply {
+               arguments = bundle
+           }
+
+           requireActivity().supportFragmentManager.beginTransaction()
+               .replace(R.id.container, loadBoardFragment)
+               .addToBackStack(null)
+               .commit()
+       }
+
 
    }
     private fun showDatePicker() {
