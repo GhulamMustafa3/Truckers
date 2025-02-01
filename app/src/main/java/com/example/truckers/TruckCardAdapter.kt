@@ -19,10 +19,10 @@ class TruckCardAdapter(private val truckarraylist: ArrayList<truckdata>) : Recyc
 
         holder.source.text=truck.origin
         holder.destination.text=truck.destination
-        holder.weight.text=truck.weight
-        holder.length.text=truck.length
-        holder.loadType.text=truck.limits
-        holder.truck_type.text=truck.type
+        holder.weight.text="${truck.weight} KG"
+        holder.length.text="${truck.length} ft"
+        holder.loadType.text="Limits:${truck.limits}"
+        holder.truck_type.text="Type:${truck.type}"
 
 
     }

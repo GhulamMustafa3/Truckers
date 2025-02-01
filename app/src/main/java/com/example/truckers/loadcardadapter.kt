@@ -28,9 +28,11 @@ class loadcardadapter(private val loadlist: ArrayList<loaddata>) : RecyclerView.
         val load = loadlist[position]
         holder.origin.text = load.origin
         holder.destination.text = load.destination
-        holder.weight.text = load.weight
-        holder.length.text = load.length
-        holder.loadType.text = load.limits
+        holder.weight.text = "${load.weight} kg"
+
+
+        holder.length.text = "${load.length} ft"
+        holder.loadType.text ="Limits: ${load.limits}"
         holder.pickupDate.text = load.pickupDate
         holder.price.text = load.price
     }
