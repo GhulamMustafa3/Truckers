@@ -1,28 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<LinearLayout
 xmlns:android="http://schemas.android.com/apk/res/android"
 xmlns:app="http://schemas.android.com/apk/res-auto"
 xmlns:tools="http://schemas.android.com/tools"
 android:layout_width="match_parent"
+    android:orientation="vertical"
 android:layout_height="match_parent"
 tools:context=".loadcompletedetails">
 
 <!-- Map Fragment -->
-<fragment
-    android:id="@+id/mapFragment"
-    android:name="com.google.android.gms.maps.SupportMapFragment"
-    android:layout_width="match_parent"
-    android:layout_height="250dp"
-    app:layout_constraintTop_toTopOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintEnd_toEndOf="parent"/>
+
 
 <!-- ScrollView for Load Details -->
 <ScrollView
     android:layout_width="match_parent"
-    android:layout_height="0dp"
+    android:layout_height="match_parent"
     android:fillViewport="true"
-    app:layout_constraintTop_toBottomOf="@id/mapFragment"
+
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintBottom_toBottomOf="parent">
@@ -30,6 +24,7 @@ tools:context=".loadcompletedetails">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
         android:orientation="vertical"
         android:padding="16dp">
 
@@ -45,7 +40,7 @@ tools:context=".loadcompletedetails">
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="#FBF8F8"
+                android:background="#F0EDED"
                 android:padding="20dp"
                 android:orientation="vertical">
 
@@ -54,6 +49,7 @@ tools:context=".loadcompletedetails">
                     android:layout_height="wrap_content"
                     android:id="@+id/usename"
                     android:text="Trucker Company Ltd"
+                    android:textColor="@color/black"
                     android:textStyle="bold"
                     android:textSize="18sp"/>
 
@@ -73,7 +69,13 @@ tools:context=".loadcompletedetails">
                     android:text="Islamabad, D Chowk (29mi)"
                     android:textSize="16sp"/>
 
+                <ImageView
+                    android:layout_width="60dp"
+                    android:layout_height="50dp"
+                    android:id="@+id/arrow"
 
+                    android:layout_marginTop="5dp"
+                    android:src="@drawable/arrow" />
 
                 <!-- Drop Off Details -->
                 <TextView
@@ -94,17 +96,22 @@ tools:context=".loadcompletedetails">
                 <!-- Trip Details -->
 
                 <LinearLayout
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
+
+                    android:paddingBottom="15dp"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:gravity="center"
+                    android:background="@drawable/roundbtn"
                     android:orientation="horizontal">
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Price:"
                         android:textColor="@color/black"
-                        android:textSize="20sp"
+                        android:textSize="15sp"
                         android:fontFamily="@font/robotoitalic"
                         android:layout_marginTop="8dp"/>
                     <TextView
@@ -112,8 +119,9 @@ tools:context=".loadcompletedetails">
                         android:layout_height="wrap_content"
                         android:id="@+id/Price"
                         android:text="5000"
+                        android:textColor="@color/black"
                         android:fontFamily="@font/robotoitalic"
-                        android:textSize="20sp"
+                        android:textSize="15sp"
                         android:layout_marginTop="8dp"/>
                 </LinearLayout>
                 <!-- Action Buttons -->
@@ -127,7 +135,8 @@ tools:context=".loadcompletedetails">
                     <Button
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/rectangleshape"
+                        android:background="@drawable/roundbtn"
+
                         android:text="Call"/>
 
 
@@ -135,7 +144,9 @@ tools:context=".loadcompletedetails">
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Book Now"
-                        android:background="@drawable/rectangleshape"
+                        android:background="@drawable/roundbtn"
+
+
                         android:layout_marginStart="8dp"/>
                 </LinearLayout>
             </LinearLayout>
@@ -153,6 +164,7 @@ tools:context=".loadcompletedetails">
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:padding="10dp"
                 android:orientation="vertical">
 
 
@@ -361,4 +373,4 @@ tools:context=".loadcompletedetails">
     </LinearLayout>
 </ScrollView>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

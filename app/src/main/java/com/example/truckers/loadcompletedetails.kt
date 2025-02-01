@@ -1,59 +1,48 @@
 package com.example.truckers
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
+import androidx.fragment.app.Fragment
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [loadcompletedetails.newInstance] factory method to
- * create an instance of this fragment.
- */
 class loadcompletedetails : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_loadcompletedetails, container, false)
-    }
+        val view = inflater.inflate(R.layout.fragment_loadcompletedetails, container, false)
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment loadcompletedetails.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            loadcompletedetails().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+        // Retrieve arguments from bundle
+        val destination = arguments?.getString("destination")
+        val dropoffDate = arguments?.getString("dropoffDate")
+        val dropoffTime = arguments?.getString("dropoffTime")
+        val length = arguments?.getString("length")
+        val limits = arguments?.getString("limits")
+        val material = arguments?.getString("material")
+        val origin = arguments?.getString("origin")
+        val phone = arguments?.getString("phone")
+        val pickupDate = arguments?.getString("pickupDate")
+        val pickupTime = arguments?.getString("pickupTime")
+        val price = arguments?.getString("price")
+        val truckType = arguments?.getString("truckType")
+
+        // Find the views and set values
+        view.findViewById<TextView>(R.id.pickuploc).text = origin
+        view.findViewById<TextView>(R.id.dropoffloc).text = destination
+        view.findViewById<TextView>(R.id.Price).text = price
+        view.findViewById<TextView>(R.id.Pickupdate).text = pickupDate
+        view.findViewById<TextView>(R.id.length).text = length
+        view.findViewById<TextView>(R.id.trucktype).text = truckType
+        view.findViewById<TextView>(R.id.Material).text = material
+        view.findViewById<TextView>(R.id.Dropoffdate).text=dropoffDate
+        view.findViewById<TextView>(R.id.dropofftime).text=dropoffTime
+        view.findViewById<TextView>(R.id.equiptype).text=limits
+        view.findViewById<TextView>(R.id.Phone).text=phone
+        view.findViewById<TextView>(R.id.PickupTime).text=pickupTime
+
+        return view
     }
 }

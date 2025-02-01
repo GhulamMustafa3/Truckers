@@ -89,14 +89,35 @@ class postloads : Fragment() {
                         recyclerView.adapter = loadcardadapter
 
                         // Handle item click
-                        loadcardadapter.setOnItemClickListener(object :
-                            loadcardadapter.onItemClickListener {
+                        loadcardadapter.setOnItemClickListener(object : loadcardadapter.onItemClickListener {
                             override fun onItemClick(position: Int) {
-                                Toast.makeText(
-                                    requireContext(),
-                                    "Item Selected",
-                                    Toast.LENGTH_SHORT
-                                ).show()
+                                // Get the selected load details
+                                val selectedLoad = loadarraylist[position]
+
+                                // Create a bundle and add selected load details to it
+                                val bundle = Bundle()
+                                bundle.putString("destination", selectedLoad.destination)
+                                bundle.putString("dropoffDate", selectedLoad.dropoffDate)
+                                bundle.putString("dropoffTime", selectedLoad.dropoffTime)
+                                bundle.putString("length", selectedLoad.length)
+                                bundle.putString("limits", selectedLoad.limits)
+                                bundle.putString("material", selectedLoad.material)
+                                bundle.putString("origin", selectedLoad.origin)
+                                bundle.putString("phone", selectedLoad.phone)
+                                bundle.putString("pickupDate", selectedLoad.pickupDate)
+                                bundle.putString("pickupTime", selectedLoad.pickupTime)
+                                bundle.putString("price", selectedLoad.price)
+                                bundle.putString("truckType", selectedLoad.truckType)
+
+                                // Pass the bundle to LoadCompletedDetailsFragment
+                                val loadCompletedDetailsFragment = loadcompletedetails()
+                                loadCompletedDetailsFragment.arguments = bundle
+
+                                // Perform the fragment transaction
+                                requireActivity().supportFragmentManager.beginTransaction()
+                                    .replace(R.id.container, loadCompletedDetailsFragment) // Replace container with the new fragment
+                                    .addToBackStack(null) // Add to back stack if needed
+                                    .commit()
                             }
                         })
 
@@ -123,4 +144,6 @@ class postloads : Fragment() {
             })
         }
     }
+
+
 }
