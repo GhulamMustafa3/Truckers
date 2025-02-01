@@ -73,6 +73,41 @@ class loadboard : Fragment() {
                     // Set the adapter with the updated truck list
                     recyclerView.adapter = loadcardadapter(loadarraylist)
 
+                    // Handle item click to open LoadDetailsFragment
+                    (recyclerView.adapter as loadcardadapter).setOnItemClickListener(object : loadcardadapter.onItemClickListener {
+                        override fun onItemClick(position: Int) {
+                            // Get the selected load details
+                            val selectedLoad = loadarraylist[position]
+
+                            // Create a bundle and add selected load details to it
+                            val bundle = Bundle().apply {
+                                putString("destination", selectedLoad.destination)
+                                putString("dropoffDate", selectedLoad.dropoffDate)
+                                putString("dropoffTime", selectedLoad.dropoffTime)
+                                putString("length", selectedLoad.length)
+                                putString("limits", selectedLoad.limits)
+                                putString("material", selectedLoad.material)
+                                putString("origin", selectedLoad.origin)
+                                putString("phone", selectedLoad.phone)
+                                putString("pickupDate", selectedLoad.pickupDate)
+                                putString("pickupTime", selectedLoad.pickupTime)
+                                putString("price", selectedLoad.price)
+                                putString("truckType", selectedLoad.truckType)
+                            }
+
+                            // Pass the bundle to LoadCompletedDetailsFragment
+                            val loadCompletedDetailsFragment = loadcompletedetails().apply {
+                                arguments = bundle
+                            }
+
+                            // Perform the fragment transaction
+                            requireActivity().supportFragmentManager.beginTransaction()
+                                .replace(R.id.container, loadCompletedDetailsFragment) // Replace container with the new fragment
+                                .addToBackStack(null) // Add to back stack if needed
+                                .commit()
+                        }
+                    })
+
                     // Update visibility based on data availability
                     if (loadarraylist.isNotEmpty()) {
                         recyclerView.visibility = View.VISIBLE
@@ -96,6 +131,7 @@ class loadboard : Fragment() {
             }
         })
     }
+
 
 
 
