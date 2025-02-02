@@ -38,4 +38,5 @@ private val deleteicon=R.drawable.baseline_delete_forever_24
 
         super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
     }
+
 }
