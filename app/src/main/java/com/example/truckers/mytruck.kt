@@ -9,6 +9,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -92,7 +93,33 @@ class mytruck : Fragment() {
                         }
 
                         // Set the adapter with the updated truck list
-                        recyclerView.adapter = TruckCardAdapter(truckarraylist)
+                        val adapter = TruckCardAdapter(truckarraylist)
+                        val swipeGesture= object : swipeGesture(requireContext()) {
+                            override fun onSwiped(
+                                viewHolder: RecyclerView.ViewHolder,
+                                direction: Int
+                            ) {
+
+                                when(direction){
+                                    ItemTouchHelper.LEFT->{
+                                     adapter.deleteitem(viewHolder.adapterPosition)
+                                    }
+                                }
+
+                            }
+
+                        }
+                        val touchHelper=ItemTouchHelper(swipeGesture)
+                        touchHelper.attachToRecyclerView(recyclerView)
+                        recyclerView.adapter=adapter
+
+                        adapter.setOnItemClickListener(object :TruckCardAdapter.onItemClickListener{
+                            override fun onItemClick(position:Int){
+
+                            }
+                        })
+
+
 
                         // Update visibility based on data availability
                         if (truckarraylist.isNotEmpty()) {

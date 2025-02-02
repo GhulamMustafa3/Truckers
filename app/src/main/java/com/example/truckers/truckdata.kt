@@ -7,5 +7,8 @@ data class truckdata(
     val weight: String ?= null,
     val length: String ?= null,
     val limits: String ?= null,
-    val type:String?= null
+    val type:String?= null,
+    val endDate:String?= null,
+    val startDate:String?= null,
+    var phone:String?=null
 )

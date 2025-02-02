@@ -8,10 +8,23 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
 class TruckCardAdapter(private val truckarraylist: ArrayList<truckdata>) : RecyclerView.Adapter<TruckCardAdapter.TruckViewHolder>() {
+    private var mlistener: onItemClickListener? = null
+
+    interface onItemClickListener {
+        fun onItemClick(position: Int)
+    }
+
+    fun setOnItemClickListener(listener: onItemClickListener) {
+        mlistener = listener
+    }
+    fun deleteitem(i:Int){
+        truckarraylist.removeAt(i)
+        notifyDataSetChanged()
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TruckViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.fragment_truckcard, parent, false)
-        return TruckViewHolder(view)
+        return TruckViewHolder(view,mlistener)
     }
 
     override fun onBindViewHolder(holder: TruckViewHolder, position: Int) {
@@ -29,7 +42,7 @@ class TruckCardAdapter(private val truckarraylist: ArrayList<truckdata>) : Recyc
 
     override fun getItemCount(): Int = truckarraylist.size
 
-    class TruckViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    class TruckViewHolder(itemView: View,listener: onItemClickListener?) : RecyclerView.ViewHolder(itemView) {
 
          val source = itemView.findViewById<TextView>(R.id.source)
          val destination = itemView.findViewById<TextView>(R.id.destination)
@@ -38,7 +51,14 @@ class TruckCardAdapter(private val truckarraylist: ArrayList<truckdata>) : Recyc
          val loadType = itemView.findViewById<TextView>(R.id.load_type)
         val truck_type=itemView.findViewById<TextView>(R.id.truck_type)
 
-
+        init {
+            itemView.setOnClickListener {
+                val position = adapterPosition
+                if (position != RecyclerView.NO_POSITION) {
+                    listener?.onItemClick(position)
+                }
+            }
+        }
 
     }
 }
