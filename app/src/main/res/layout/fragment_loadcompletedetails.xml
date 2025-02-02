@@ -145,7 +145,7 @@ tools:context=".loadcompletedetails">
                         android:layout_height="wrap_content"
                         android:text="Book Now"
                         android:background="@drawable/roundbtn"
-android:id="@+id/book"
+                        android:id="@+id/book"
 
                         android:layout_marginStart="8dp"/>
                 </LinearLayout>

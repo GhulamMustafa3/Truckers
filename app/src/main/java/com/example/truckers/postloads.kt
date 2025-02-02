@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -86,9 +87,27 @@ class postloads : Fragment() {
 
                         // Set the adapter after loading data
                         loadcardadapter = loadcardadapter(loadarraylist)
+                        val swipeGesture= object : swipeGesture(requireContext()) {
+                            override fun onSwiped(
+                                viewHolder: RecyclerView.ViewHolder,
+                                direction: Int
+                            ) {
+
+                                when(direction){
+                                    ItemTouchHelper.LEFT->{
+                                        loadcardadapter.deleteitem(viewHolder.adapterPosition)
+                                    }
+                                }
+
+                            }
+
+                        }
+                        val touchHelper= ItemTouchHelper(swipeGesture)
+                        touchHelper.attachToRecyclerView(recyclerView)
                         recyclerView.adapter = loadcardadapter
 
                         // Handle item click
+                        /*
                         loadcardadapter.setOnItemClickListener(object : loadcardadapter.onItemClickListener {
                             override fun onItemClick(position: Int) {
                                 // Get the selected load details
@@ -120,7 +139,7 @@ class postloads : Fragment() {
                                     .commit()
                             }
                         })
-
+*/
                         // Update UI visibility based on data
                         if (loadarraylist.isNotEmpty()) {
                             recyclerView.visibility = View.VISIBLE

@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/loadboard"
-        android:title="Loads"
+        android:id="@+id/BookedTrucks"
+        android:title="BookedTrucks"
         android:icon="@drawable/baseline_density_small_24"/>
     <item
-        android:id="@+id/Searchload"
-        android:title="Search Load"
-        android:icon="@drawable/baseline_search_24"
+        android:id="@+id/PickUpRequests"
+        android:title="Pickup Requests"
+        android:icon="@drawable/baseline_directions_car_24"
         />
     <item
         android:id="@+id/postload"
@@ -17,7 +17,7 @@
     <item
         android:id="@+id/SearchTruck"
         android:title="Search Truck"
-        android:icon="@drawable/mytruck"
+        android:icon="@drawable/baseline_search_24"
         />
     <item
         android:id="@+id/profile"

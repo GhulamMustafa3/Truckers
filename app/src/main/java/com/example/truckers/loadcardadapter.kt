@@ -23,6 +23,10 @@ class loadcardadapter(private val loadlist: ArrayList<loaddata>) : RecyclerView.
             LayoutInflater.from(parent.context).inflate(R.layout.fragment_loadcard, parent, false)
         return loadViewHolder(view, mlistener)
     }
+    fun deleteitem(i:Int){
+        loadlist.removeAt(i)
+        notifyDataSetChanged()
+    }
 
     override fun onBindViewHolder(holder: loadViewHolder, position: Int) {
         val load = loadlist[position]

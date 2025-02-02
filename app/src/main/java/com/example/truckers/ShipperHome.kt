@@ -22,8 +22,8 @@ class ShipperHome : AppCompatActivity() {
         bnView.setOnNavigationItemSelectedListener { item: MenuItem ->
             val id = item.itemId
             when (id) {
-                R.id.loadboard -> loadFrg(loadboard(), true)
-                R.id.Searchload -> loadFrg(searchload(), false)
+                R.id.BookedTrucks-> loadFrg(BookedTrucks(), true)
+                R.id.PickUpRequests -> loadFrg(PickupReq(), false)
                 R.id.postload -> loadFrg(postloads(), false)
                 R.id.SearchTruck -> loadFrg(searchtruck(), false)
                 else -> loadFrg(ShipperProfile(), false)
@@ -31,7 +31,7 @@ class ShipperHome : AppCompatActivity() {
             true
         }
 
-        bnView.selectedItemId = R.id.loadboard
+        bnView.selectedItemId = R.id.BookedTrucks
     }
     private fun loadFrg(fragment: Fragment, flag: Boolean) {
         val fm: FragmentManager = supportFragmentManager
