@@ -78,7 +78,10 @@ advancedfilter.setOnClickListener{
 
                         for (loadSnap in loadsRef.children) {
                             val loaddetail = loadSnap.getValue(loaddata::class.java)
+
                             if (loaddetail != null) {
+                                var loadId = loadSnap.key?: "Unknown ID"
+                                loaddetail.loadId = loadId
                                 loadarraylist.add(loaddetail)
                             }
                         }
@@ -106,7 +109,8 @@ advancedfilter.setOnClickListener{
 
                     adapter.setOnItemClickListener(object : loadcardadapter.onItemClickListener {
                         override fun onItemClick(position: Int) {
-                            openLoadCompleteDetails(displayedList[position])
+                            val load=displayedList[position]
+                            openLoadCompleteDetails(load,load.loadId!!)
                         }
                     })
 
@@ -131,7 +135,7 @@ advancedfilter.setOnClickListener{
         })
     }
 
-    private fun openLoadCompleteDetails(load: loaddata) {
+    private fun openLoadCompleteDetails(load: loaddata,loadId:String) {
         val bundle = Bundle().apply {
             putString("destination", load.destination)
             putString("dropoffDate", load.dropoffDate)
@@ -145,6 +149,7 @@ advancedfilter.setOnClickListener{
             putString("pickupTime", load.pickupTime)
             putString("price", load.price)
             putString("truckType", load.truckType)
+            putString("loadId", loadId)
         }
 
         val loadCompletedDetailsFragment = loadcompletedetails().apply {

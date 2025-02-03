@@ -15,7 +15,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/gray"
-            android:padding="10dp"
+            android:padding="20dp"
             android:orientation="horizontal">
             <TextView
                 android:layout_width="match_parent"
@@ -27,6 +27,7 @@
                 android:layout_marginTop="20dp"
                 android:paddingTop="20dp"
                 android:paddingBottom="30dp"
+                android:fontFamily="@font/robotoitalic"
                 android:textColor="@color/black"
                 android:text="Booked Trucks Requests" />
 

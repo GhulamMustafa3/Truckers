@@ -13,5 +13,6 @@ data class loaddata(
     val material: String?= null,    // Add this
     val phone: String?= null,       // Add this
     val pickupTime: String?= null,  // Add this
-    val truckType: String?= null
+    val truckType: String?= null,
+    var loadId:String?=null
 )

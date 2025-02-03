@@ -10,7 +10,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="30dp"
+        android:textSize="25dp"
         android:background="@color/gray"
         android:fontFamily="@font/robotoitalic"
         android:padding="20dp"
@@ -72,6 +72,7 @@
             android:layout_marginTop="10dp"
             android:id="@+id/email"
             android:hint="Email"
+            android:textColorHint="@color/black"
             android:padding="10dp"
             android:background="@drawable/rectangleshape"
             />
@@ -82,6 +83,7 @@
             android:layout_marginTop="10dp"
             android:id="@+id/phone"
             android:hint="Phone"
+            android:textColorHint="@color/black"
             android:padding="10dp"
             android:background="@drawable/rectangleshape"
             />

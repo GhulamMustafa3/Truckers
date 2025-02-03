@@ -16,14 +16,18 @@
             android:layout_height="wrap_content"
             android:background="@color/gray"
             android:weightSum="2"
+
             android:orientation="horizontal">
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="30dp"
+                android:textSize="25dp"
                 android:layout_weight="1"
                 android:textStyle="bold"
                 android:padding="10dp"
+                android:paddingTop="20dp"
+                android:paddingLeft="30dp"
+                android:fontFamily="@font/robotoitalic"
                 android:layout_marginTop="20dp"
                 android:textColor="@color/black"
                 android:text="Search Truck" />
