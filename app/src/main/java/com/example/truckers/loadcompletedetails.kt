@@ -176,7 +176,7 @@ class loadcompletedetails : Fragment() {
     }
 
     companion object {
-        private const val REQUEST_CALL_PHONE = 1
+       private const val REQUEST_CALL_PHONE = 1
     }
 
 }

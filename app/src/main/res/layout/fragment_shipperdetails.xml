@@ -44,17 +44,18 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Name:"
+                    android:text="Email:"
                     android:textColor="@color/black"
                     android:textSize="16sp"
                     android:layout_marginTop="8dp"/>
+
                 <TextView
+                    android:id="@+id/email"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/Pickupdate"
-                    android:text="DD/MM/YY"
-                    android:textSize="16sp"
-                    android:layout_marginTop="8dp"/>
+                    android:layout_marginTop="8dp"
+                    android:text="email"
+                    android:textSize="16sp" />
             </LinearLayout>
 
 

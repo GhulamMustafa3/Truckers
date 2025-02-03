@@ -56,12 +56,36 @@ class BookedTruckReq : Fragment() {
                 if (snapshot.exists()) {
                     for (truckSnap in snapshot.children) {
                         val truckDetail = truckSnap.getValue(truckdata::class.java)
+
+                        // ✅ Fetch email & phone directly from truckSnap
+                        val shipperEmail = truckSnap.child("email").getValue(String::class.java) ?: ""
+                        val shipperPhone = truckSnap.child("phone").getValue(String::class.java) ?: ""
+
                         if (truckDetail != null) {
                             truckArrayList.add(truckDetail)
                         }
                     }
 
                     adapter.notifyDataSetChanged()
+                    adapter.setOnItemClickListener(object : TruckCardAdapter.onItemClickListener {
+                        override fun onItemClick(position: Int) {
+                            val selectedTruck = truckArrayList[position]
+
+                            // ✅ Pass email and phone when navigating to ShipperDetailsFragment
+                            val bundle = Bundle().apply {
+                                putString("shipper_email", snapshot.children.elementAt(position).child("email").getValue(String::class.java))
+                                putString("shipper_phone", snapshot.children.elementAt(position).child("phone").getValue(String::class.java))
+                            }
+
+                            val shipperDetailsFragment = shipperdetails()
+                            shipperDetailsFragment.arguments = bundle
+
+                            requireActivity().supportFragmentManager.beginTransaction()
+                                .replace(R.id.container, shipperDetailsFragment) // Adjust with your container ID
+                                .addToBackStack(null)
+                                .commit()
+                        }
+                    })
 
                     if (truckArrayList.isNotEmpty()) {
                         recyclerView.visibility = View.VISIBLE
@@ -84,4 +108,5 @@ class BookedTruckReq : Fragment() {
             }
         })
     }
+
 }

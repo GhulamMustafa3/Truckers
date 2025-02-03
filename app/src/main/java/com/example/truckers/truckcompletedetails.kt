@@ -85,64 +85,82 @@ class truckcompletedetails : Fragment() {
 
         val truckID = arguments?.getString("truckID") ?: return // Get the truckID from arguments
 
-        val load = truckdata(
-            destination = arguments?.getString("destination") ?: "",
-            startDate = arguments?.getString("dropoffDate") ?: "",
-            endDate = arguments?.getString("dropoffTime") ?: "",
-            length = arguments?.getString("length") ?: "",
-            limits = arguments?.getString("limits") ?: "",
-            weight = arguments?.getString("weight") ?: "",
-            origin = arguments?.getString("origin") ?: "",
-            phone = arguments?.getString("phone") ?: "",
-            type = arguments?.getString("truckType") ?: "",
-            truckID = truckID // Add truckID to load data
-        )
+        val userEmail = FirebaseAuth.getInstance().currentUser?.email ?: ""
 
-        if (loadId != null) {
-            // Step 1: Find the truck using its truckID in the 'users' node
-            val truckRef = FirebaseDatabase.getInstance().getReference("users")
-            databaseRef.child(loadId).setValue(load) // ✅ Store only inside bookedTrucks
-                .addOnSuccessListener {
+        // Fetch user's phone number directly from the user ID in the "shippers" node
+        val userRef = FirebaseDatabase.getInstance().getReference("shippers").child(userId)
+        userRef.get().addOnSuccessListener { snapshot ->
+            val userPhone = snapshot.child("phone").getValue(String::class.java) ?: ""  // Fetch phone number from child node
 
-                }
-                .addOnFailureListener {
+            val load = truckdata(
+                destination = arguments?.getString("destination") ?: "",
+                startDate = arguments?.getString("dropoffDate") ?: "",
+                endDate = arguments?.getString("dropoffTime") ?: "",
+                length = arguments?.getString("length") ?: "",
+                limits = arguments?.getString("limits") ?: "",
+                weight = arguments?.getString("weight") ?: "",
+                origin = arguments?.getString("origin") ?: "",
+                phone = userPhone, // Store user's phone number
+                type = arguments?.getString("truckType") ?: "",
+                truckID = truckID, // Add truckID to load data
+                email = userEmail // Store user's email
+            )
 
-                }
-            truckRef.addListenerForSingleValueEvent(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    for (userSnap in snapshot.children) {
-                        // Iterate through the children of the 'users' node (to get truck details)
-                        val trucks = userSnap.child("trucks")
-                        for (truckSnap in trucks.children) {
-                            val truckData = truckSnap.getValue(truckdata::class.java)
-                            if (truckData != null && truckSnap.key == truckID) {
-                                // Step 2: If truck ID matches, store the entire truck data under 'bookedtruckreq' node
-                                val bookedTruckRef = FirebaseDatabase.getInstance()
-                                    .getReference("users")
-                                    .child(userSnap.key!!) // Using the user ID key
-                                    .child("bookedtruckreq")
-                                    .push() // Generate a unique key under bookedtruckreq
+            if (loadId != null) {
+                // Step 1: Find the truck using its truckID in the 'users' node
+                val truckRef = FirebaseDatabase.getInstance().getReference("users")
+                databaseRef.child(loadId).setValue(load) // ✅ Store only inside bookedTrucks
+                    .addOnSuccessListener {
 
-                                // Store the entire truck details under the new unique ID in "bookedtruckreq"
-                                bookedTruckRef.setValue(truckData)
-                                    .addOnSuccessListener {
-                                        Toast.makeText(requireContext(), "Truck booked successfully!", Toast.LENGTH_SHORT).show()
-                                        navigateToMyLoads()
-                                    }
-                                    .addOnFailureListener {
-                                        Toast.makeText(requireContext(), "Failed to book truck", Toast.LENGTH_SHORT).show()
-                                    }
+                    }
+                    .addOnFailureListener {
+
+                    }
+                truckRef.addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        for (userSnap in snapshot.children) {
+                            // Iterate through the children of the 'users' node (to get truck details)
+                            val trucks = userSnap.child("trucks")
+                            for (truckSnap in trucks.children) {
+                                val truckData = truckSnap.getValue(truckdata::class.java)
+                                if (truckData != null && truckSnap.key == truckID) {
+                                    // Step 2: If truck ID matches, store the entire truck data under 'bookedtruckreq' node
+                                    val bookedTruckRef = FirebaseDatabase.getInstance()
+                                        .getReference("users")
+                                        .child(userSnap.key!!) // Using the user ID key
+                                        .child("bookedtruckreq")
+                                        .push() // Generate a unique key under bookedtruckreq
+
+                                    // Add email and phone to truckData before storing it in bookedtruckreq
+                                    val bookedTruckData = truckData.copy(email = userEmail, phone = userPhone)
+
+                                    // Store the truck details along with the user's email and phone under "bookedtruckreq"
+                                    bookedTruckRef.setValue(bookedTruckData)
+                                        .addOnSuccessListener {
+                                            Toast.makeText(requireContext(), "Truck booked successfully!", Toast.LENGTH_SHORT).show()
+                                            navigateToMyLoads()
+                                        }
+                                        .addOnFailureListener {
+                                            Toast.makeText(requireContext(), "Failed to book truck", Toast.LENGTH_SHORT).show()
+                                        }
+                                }
                             }
                         }
                     }
-                }
 
-                override fun onCancelled(error: DatabaseError) {
-                    // Handle error if database read is cancelled
-                }
-            })
+                    override fun onCancelled(error: DatabaseError) {
+                        // Handle error if database read is cancelled
+                    }
+                })
+            }
         }
+            .addOnFailureListener {
+                Toast.makeText(requireContext(), "Failed to retrieve phone number", Toast.LENGTH_SHORT).show()
+            }
     }
+
+
+
 
 
 
