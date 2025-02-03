@@ -26,7 +26,7 @@ class HomeActivity : AppCompatActivity() {
                 R.id.loadboard -> loadFrg(loadboard(), true)
                 R.id.myload -> loadFrg(myloads(), false)
                 R.id.mytruck -> loadFrg(mytruck(), false)
-                R.id.Chats -> loadFrg(chats(), false)
+                R.id.BookedTrucks -> loadFrg(BookedTruckReq(), false)
                 else -> loadFrg(Profile(), false)
             }
             true

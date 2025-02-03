@@ -85,6 +85,11 @@ refresh.setOnClickListener{
                             val truckdetail = trucksnap.getValue(truckdata::class.java)
                             if (truckdetail != null) {
                                 truckdetail.phone = phone // Attach phone number to truck data
+
+                                // Get the truck's unique Firebase ID (auto-generated key)
+                                val truckID = trucksnap.key ?: "Unknown ID" // Firebase automatically generates this key
+                                truckdetail.truckID = truckID // Assign the truck ID to the truck data object
+
                                 truckarraylist.add(truckdetail)
                             }
                         }
@@ -110,7 +115,8 @@ refresh.setOnClickListener{
                     recyclerView.adapter = adapter
                     adapter.setOnItemClickListener(object : TruckCardAdapter.onItemClickListener {
                         override fun onItemClick(position: Int) {
-                            openTruckCompleteDetails(displayedList[position])
+                            val truckdetail = displayedList[position]
+                            openTruckCompleteDetails(truckdetail, truckdetail.truckID!!) // Pass the truck ID
                         }
                     })
 
@@ -139,19 +145,20 @@ refresh.setOnClickListener{
     }
 
 
-    private fun openTruckCompleteDetails(load: truckdata) {
+
+
+
+    private fun openTruckCompleteDetails(load: truckdata, truckID: String) {
         val bundle = Bundle().apply {
+            putString("truckID", truckID) // Add the truck ID to the bundle
             putString("destination", load.destination)
             putString("endDate", load.endDate)
-            putString("weight","KG:${load.weight}")
+            putString("weight", "KG:${load.weight}")
             putString("length", "Height:${load.length} ft")
-            putString("limits","Limits: ${load.limits}")
-
+            putString("limits", "Limits: ${load.limits}")
             putString("origin", load.origin)
             putString("phone", load.phone)
             putString("startDate", load.startDate)
-
-
             putString("truckType", load.type)
         }
 
@@ -164,6 +171,7 @@ refresh.setOnClickListener{
             .addToBackStack(null)
             .commit()
     }
+
 
 
 

@@ -10,5 +10,6 @@ data class truckdata(
     val type:String?= null,
     val endDate:String?= null,
     val startDate:String?= null,
-    var phone:String?=null
+    var phone:String?=null,
+    var truckID: String? = null
 )

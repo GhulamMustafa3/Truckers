@@ -16,7 +16,10 @@ import androidx.core.content.ContextCompat
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 
 
 class truckcompletedetails : Fragment() {
@@ -78,7 +81,9 @@ class truckcompletedetails : Fragment() {
             .child(userId)
             .child("bookedTrucks")
 
-        val loadId = databaseRef.push().key // Generate unique key
+        val loadId = databaseRef.push().key // Generate unique key for booking
+
+        val truckID = arguments?.getString("truckID") ?: return // Get the truckID from arguments
 
         val load = truckdata(
             destination = arguments?.getString("destination") ?: "",
@@ -89,20 +94,57 @@ class truckcompletedetails : Fragment() {
             weight = arguments?.getString("weight") ?: "",
             origin = arguments?.getString("origin") ?: "",
             phone = arguments?.getString("phone") ?: "",
-            type = arguments?.getString("truckType") ?: ""
+            type = arguments?.getString("truckType") ?: "",
+            truckID = truckID // Add truckID to load data
         )
 
         if (loadId != null) {
+            // Step 1: Find the truck using its truckID in the 'users' node
+            val truckRef = FirebaseDatabase.getInstance().getReference("users")
             databaseRef.child(loadId).setValue(load) // ✅ Store only inside bookedTrucks
                 .addOnSuccessListener {
-                    Toast.makeText(requireContext(), "Truck booked successfully!", Toast.LENGTH_SHORT).show()
-                    navigateToMyLoads()
+
                 }
                 .addOnFailureListener {
-                    Toast.makeText(requireContext(), "Failed to book load", Toast.LENGTH_SHORT).show()
+
                 }
+            truckRef.addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    for (userSnap in snapshot.children) {
+                        // Iterate through the children of the 'users' node (to get truck details)
+                        val trucks = userSnap.child("trucks")
+                        for (truckSnap in trucks.children) {
+                            val truckData = truckSnap.getValue(truckdata::class.java)
+                            if (truckData != null && truckSnap.key == truckID) {
+                                // Step 2: If truck ID matches, store the entire truck data under 'bookedtruckreq' node
+                                val bookedTruckRef = FirebaseDatabase.getInstance()
+                                    .getReference("users")
+                                    .child(userSnap.key!!) // Using the user ID key
+                                    .child("bookedtruckreq")
+                                    .push() // Generate a unique key under bookedtruckreq
+
+                                // Store the entire truck details under the new unique ID in "bookedtruckreq"
+                                bookedTruckRef.setValue(truckData)
+                                    .addOnSuccessListener {
+                                        Toast.makeText(requireContext(), "Truck booked successfully!", Toast.LENGTH_SHORT).show()
+                                        navigateToMyLoads()
+                                    }
+                                    .addOnFailureListener {
+                                        Toast.makeText(requireContext(), "Failed to book truck", Toast.LENGTH_SHORT).show()
+                                    }
+                            }
+                        }
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    // Handle error if database read is cancelled
+                }
+            })
         }
     }
+
+
 
 
     private fun navigateToMyLoads() {

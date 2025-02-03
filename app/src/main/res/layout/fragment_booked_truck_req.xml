@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/white"
+    tools:context=".BookedTruckReq">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/gray"
+            android:padding="10dp"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="20dp"
+                android:layout_weight="1"
+                android:textStyle="bold"
+                android:padding="1dp"
+                android:layout_marginTop="20dp"
+                android:paddingTop="20dp"
+                android:paddingBottom="30dp"
+                android:textColor="@color/black"
+                android:text="Booked Trucks Requests" />
+
+
+        </LinearLayout>
+
+        <ImageView
+            android:layout_marginTop="130dp"
+            android:layout_width="wrap_content"
+            android:layout_height="200dp"
+            android:src="@drawable/loadsdefault"
+            android:id="@+id/no_loads_image"
+            android:visibility="visible"
+            android:layout_gravity="center" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="No Booked Trucks To Show "
+            android:layout_gravity="center"
+            android:textSize="28dp"
+            android:id="@+id/no_loads_text"
+            android:visibility="visible" />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/truck_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            tools:listitem="@layout/fragment_truckcard"
+            android:visibility="gone" />
+    </LinearLayout>
+
+
+</LinearLayout>

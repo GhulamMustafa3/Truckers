@@ -113,7 +113,6 @@ class loaddetailsform : Fragment() {
             return
         }
 
-
         // Check if limits input is either "full" or "partial"
         if (limits.lowercase() != "full" && limits.lowercase() != "partial") {
             Toast.makeText(requireContext(), "Equipment limits must be 'full' or 'partial'", Toast.LENGTH_SHORT).show()
@@ -162,10 +161,6 @@ class loaddetailsform : Fragment() {
             return
         }
 
-
-
-
-
         val userId = firebaseAuth.currentUser?.uid
         if (userId == null) {
             Toast.makeText(requireContext(), "User not authenticated", Toast.LENGTH_SHORT).show()
@@ -197,17 +192,21 @@ class loaddetailsform : Fragment() {
         val loadRef = databaseReference.child(userId).child("loaddetails")
         loadRef.push().setValue(loadDetails)
             .addOnSuccessListener {
+                // Data saved successfully, now navigate to the next fragment
                 Toast.makeText(requireContext(), "Data saved successfully!", Toast.LENGTH_SHORT).show()
                 binding.progressBar.visibility = View.GONE
                 binding.nextButton.isEnabled = true
                 navigateToFragment(postloads())
             }
             .addOnFailureListener {
+                // Data save failed, handle error
                 Toast.makeText(requireContext(), "Failed to save data", Toast.LENGTH_SHORT).show()
                 binding.progressBar.visibility = View.GONE
                 binding.nextButton.isEnabled = true
             }
     }
+
+
 
     private fun navigateToFragment(fragment: Fragment) {
         val transaction: FragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()

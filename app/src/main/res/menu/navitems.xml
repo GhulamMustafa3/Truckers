@@ -15,9 +15,9 @@
         android:icon="@drawable/mytruck"
        />
     <item
-        android:id="@+id/Chats"
-        android:title="Chats"
-        android:icon="@drawable/baseline_chat_bubble_24"
+        android:id="@+id/BookedTrucks"
+        android:title="BookedTrucks"
+        android:icon="@drawable/baseline_car_rental_24"
         />
     <item
         android:id="@+id/profile"
