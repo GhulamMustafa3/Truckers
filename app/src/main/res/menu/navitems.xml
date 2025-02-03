@@ -2,7 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/loadboard"
-        android:title="Loads"
+        android:title="LoadBoard"
         android:icon="@drawable/baseline_density_small_24"/>
     <item
         android:id="@+id/myload"
@@ -11,19 +11,19 @@
      />
     <item
         android:id="@+id/mytruck"
-        android:title="My Truck"
-        android:icon="@drawable/mytruck"
+        android:title="MyTruck"
+        android:icon="@drawable/struck"
        />
     <item
         android:id="@+id/BookedTrucks"
         android:title="BookedTrucks"
-        android:icon="@drawable/baseline_car_rental_24"
+        android:icon="@drawable/mytruck"
         />
     <item
         android:id="@+id/profile"
         android:title="Profile"
 
-        android:icon="@drawable/profile"
+        android:icon="@drawable/__icon__user_"
       />
 
 </menu>

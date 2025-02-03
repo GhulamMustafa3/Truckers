@@ -3,27 +3,27 @@
     <item
         android:id="@+id/BookedTrucks"
         android:title="BookedTrucks"
-        android:icon="@drawable/baseline_density_small_24"/>
+        android:icon="@drawable/layer_8"/>
     <item
         android:id="@+id/PickUpRequests"
-        android:title="Pickup Requests"
-        android:icon="@drawable/baseline_directions_car_24"
+        android:title="PickupRequests"
+        android:icon="@drawable/mytruck"
         />
     <item
         android:id="@+id/postload"
-        android:title="Post Load"
+        android:title="PostLoad"
         android:icon="@drawable/loadedtruck"
         />
     <item
         android:id="@+id/SearchTruck"
-        android:title="Search Truck"
+        android:title="SearchTruck"
         android:icon="@drawable/baseline_search_24"
         />
     <item
         android:id="@+id/profile"
         android:title="Profile"
 
-        android:icon="@drawable/profile"
+        android:icon="@drawable/__icon__user_"
         />
 
 </menu>
