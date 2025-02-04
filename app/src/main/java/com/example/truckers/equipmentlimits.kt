@@ -1,5 +1,6 @@
 package com.example.truckers
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -110,6 +111,7 @@ class equipmentlimits : Fragment() {
         return length != savedLength || weight != savedWeight || limits != savedLimits || type != savedType
     }
 
+    @SuppressLint("SuspiciousIndentation")
     private fun saveEquipmentDetailsToFirebase(length: String, weight: String, limits: String, type: String) {
         val currentUser = FirebaseAuth.getInstance().currentUser
         if (currentUser != null) {

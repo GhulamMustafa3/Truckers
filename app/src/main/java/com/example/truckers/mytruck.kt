@@ -94,23 +94,6 @@ class mytruck : Fragment() {
 
                         // Set the adapter with the updated truck list
                         val adapter = TruckCardAdapter(truckarraylist)
-                        val swipeGesture= object : swipeGesture(requireContext()) {
-                            override fun onSwiped(
-                                viewHolder: RecyclerView.ViewHolder,
-                                direction: Int
-                            ) {
-
-                                when(direction){
-                                    ItemTouchHelper.LEFT->{
-                                     adapter.deleteitem(viewHolder.adapterPosition)
-                                    }
-                                }
-
-                            }
-
-                        }
-                        val touchHelper=ItemTouchHelper(swipeGesture)
-                        touchHelper.attachToRecyclerView(recyclerView)
                         recyclerView.adapter=adapter
 
                         adapter.setOnItemClickListener(object :TruckCardAdapter.onItemClickListener{

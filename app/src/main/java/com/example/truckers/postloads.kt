@@ -87,23 +87,6 @@ class postloads : Fragment() {
 
                         // Set the adapter after loading data
                         loadcardadapter = loadcardadapter(loadarraylist)
-                        val swipeGesture= object : swipeGesture(requireContext()) {
-                            override fun onSwiped(
-                                viewHolder: RecyclerView.ViewHolder,
-                                direction: Int
-                            ) {
-
-                                when(direction){
-                                    ItemTouchHelper.LEFT->{
-                                        loadcardadapter.deleteitem(viewHolder.adapterPosition)
-                                    }
-                                }
-
-                            }
-
-                        }
-                        val touchHelper= ItemTouchHelper(swipeGesture)
-                        touchHelper.attachToRecyclerView(recyclerView)
                         recyclerView.adapter = loadcardadapter
 
                         // Handle item click

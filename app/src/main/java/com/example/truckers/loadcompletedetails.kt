@@ -96,64 +96,87 @@ class loadcompletedetails : Fragment() {
         val databaseRef = FirebaseDatabase.getInstance().getReference("shippers")
             .child(userId)
             .child("bookedloadsreq")
-        val bookid=databaseRef.push().key
+
+        val userEmail = FirebaseAuth.getInstance().currentUser?.email ?: ""
+        val bookid = databaseRef.push().key
 
         val bookedLoadsRef = userRef.child("bookedLoads")
         val loadId = bookedLoadsRef.push().key // Generate unique key for the booked load
         val loadIds = arguments?.getString("loadId") ?: return
-        val load = loaddata(
-            destination = arguments?.getString("destination") ?: "",
-            dropoffDate = arguments?.getString("dropoffDate") ?: "",
-            dropoffTime = arguments?.getString("dropoffTime") ?: "",
-            length = arguments?.getString("length") ?: "",
-            limits = arguments?.getString("limits") ?: "",
-            material = arguments?.getString("material") ?: "",
-            origin = arguments?.getString("origin") ?: "",
-            phone = arguments?.getString("phone") ?: "",
-            pickupDate = arguments?.getString("pickupDate") ?: "",
-            pickupTime = arguments?.getString("pickupTime") ?: "",
-            price = arguments?.getString("price") ?: "",
-            truckType = arguments?.getString("truckType") ?: "",
-            loadId = loadIds
 
-        )
+        userRef.get().addOnSuccessListener { snapshot ->
+            val userPhone = snapshot.child("phone").getValue(String::class.java) ?: ""
 
-        if (loadId != null) {
-            bookedLoadsRef.child(loadId).setValue(load)
-                .addOnSuccessListener {
-                    Toast.makeText(requireContext(), "Load booked successfully!", Toast.LENGTH_SHORT).show()
+            val load = loaddata(
+                destination = arguments?.getString("destination") ?: "",
+                dropoffDate = arguments?.getString("dropoffDate") ?: "",
+                dropoffTime = arguments?.getString("dropoffTime") ?: "",
+                length = arguments?.getString("length") ?: "",
+                limits = arguments?.getString("limits") ?: "",
+                material = arguments?.getString("material") ?: "",
+                origin = arguments?.getString("origin") ?: "",
+                phone = userPhone, // Store the current user's phone
+                pickupDate = arguments?.getString("pickupDate") ?: "",
+                pickupTime = arguments?.getString("pickupTime") ?: "",
+                price = arguments?.getString("price") ?: "",
+                truckType = arguments?.getString("truckType") ?: "",
+                loadId = loadIds,
+                email = userEmail // Store the current user's email
+            )
 
-                }
-                .addOnFailureListener {
-                    Toast.makeText(requireContext(), "Failed to book load", Toast.LENGTH_SHORT).show()
-                }
-        }
-        if(bookid!=null){
-            val loadref=FirebaseDatabase.getInstance().getReference("shippers")
-            loadref.addListenerForSingleValueEvent(object :ValueEventListener{
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    for(usersnap in snapshot.children){
-                        val userId = usersnap.key
-                        val loads=usersnap.child("loaddetails")
-                        for(loadsnap in loads.children){
-                            val loaddata=loadsnap.getValue(loaddata::class.java)
-                            if(loaddata!=null &&loadsnap.key==loadIds){
-                                val loaddetails=FirebaseDatabase.getInstance().getReference("shippers").child(userId!!)
-                                    .child("bookedloadsreq").push()
-                                loaddetails.setValue(loaddata).addOnSuccessListener { navigateToMyLoads() }
-                                    .addOnFailureListener{}
+            // Store in the current user's booked loads
+            if (loadId != null) {
+                bookedLoadsRef.child(loadId).setValue(load)
+                    .addOnSuccessListener {
+                        Toast.makeText(requireContext(), "Load booked successfully!", Toast.LENGTH_SHORT).show()
+
+                    }
+                    .addOnFailureListener {
+                        Toast.makeText(requireContext(), "Failed to book load", Toast.LENGTH_SHORT).show()
+                    }
+            }
+
+            // Store in shipper's booked load requests
+            if (bookid != null) {
+                val loadRef = FirebaseDatabase.getInstance().getReference("shippers")
+                loadRef.addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        for (usersnap in snapshot.children) {
+                            val shipperId = usersnap.key
+                            val loads = usersnap.child("loaddetails")
+                            for (loadsnap in loads.children) {
+                                val loaddata = loadsnap.getValue(loaddata::class.java)
+                                if (loaddata != null && loadsnap.key == loadIds) {
+                                    val loaddetails = FirebaseDatabase.getInstance()
+                                        .getReference("shippers")
+                                        .child(shipperId!!)
+                                        .child("bookedloadsreq")
+                                        .push()
+
+                                    // Store with user details
+                                    val bookedLoadWithUser = loaddata.copy(
+                                        phone = userPhone,
+                                        email = userEmail
+                                    )
+
+                                    loaddetails.setValue(bookedLoadWithUser)
+                                        .addOnSuccessListener { navigateToMyLoads() }
+                                        .addOnFailureListener {
+                                            Toast.makeText(requireContext(), "Failed to book load request", Toast.LENGTH_SHORT).show()
+                                        }
+                                }
                             }
                         }
                     }
-                }
 
-                override fun onCancelled(error: DatabaseError) {
-                    TODO("Not yet implemented")
-                }
-
-            })
+                    override fun onCancelled(error: DatabaseError) {
+                        Toast.makeText(requireContext(), "Database Error: ${error.message}", Toast.LENGTH_SHORT).show()
+                    }
+                })
+            }
         }
     }
+
 
 
     private fun navigateToMyLoads() {

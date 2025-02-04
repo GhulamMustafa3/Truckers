@@ -64,13 +64,33 @@ class PickupReq : Fragment() {
                 if (snapshot.exists()) {
                     for (truckSnap in snapshot.children) {
                         val truckDetail = truckSnap.getValue(loaddata::class.java)
+                        val shipperEmail = truckSnap.child("email").getValue(String::class.java) ?: ""
+                        val shipperPhone = truckSnap.child("phone").getValue(String::class.java) ?: ""
                         if (truckDetail != null) {
                             loadArrayList.add(truckDetail)
                         }
                     }
 
                     adapter.notifyDataSetChanged()
+                    adapter.setOnItemClickListener(object : loadcardadapter.onItemClickListener {
+                        override fun onItemClick(position: Int) {
+                            val selectedTruck = loadArrayList[position]
 
+                            // ✅ Pass email and phone when navigating to ShipperDetailsFragment
+                            val bundle = Bundle().apply {
+                                putString("email", snapshot.children.elementAt(position).child("email").getValue(String::class.java))
+                                putString("phone", snapshot.children.elementAt(position).child("phone").getValue(String::class.java))
+                            }
+
+                            val shipperDetailsFragment =DRIVERDETAILS()
+                            shipperDetailsFragment.arguments = bundle
+
+                            requireActivity().supportFragmentManager.beginTransaction()
+                                .replace(R.id.container, shipperDetailsFragment) // Adjust with your container ID
+                                .addToBackStack(null)
+                                .commit()
+                        }
+                    })
                     if (loadArrayList.isNotEmpty()) {
                         recyclerView.visibility = View.VISIBLE
                         noLoadsImage.visibility = View.GONE
