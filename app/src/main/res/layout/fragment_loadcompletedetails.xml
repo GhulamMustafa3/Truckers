@@ -27,7 +27,11 @@ tools:context=".loadcompletedetails">
         android:layout_marginTop="20dp"
         android:orientation="vertical"
         android:padding="16dp">
-
+        <fragment
+            android:id="@+id/map"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="250dp"/>
         <!-- Load Details Card -->
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"

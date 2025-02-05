@@ -13,6 +13,12 @@ import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
@@ -20,10 +26,11 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 
-class loadcompletedetails : Fragment() {
+class loadcompletedetails : Fragment(), OnMapReadyCallback {
     private lateinit var phoneTextView: TextView
     private lateinit var callButton: Button
     private lateinit var bookNowButton:Button
+    private lateinit var mMap: GoogleMap
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -32,6 +39,8 @@ class loadcompletedetails : Fragment() {
         phoneTextView = view.findViewById(R.id.Phone) // Get phone number TextView
         callButton = view.findViewById(R.id.call)     // Get Call button
         bookNowButton=view.findViewById(R.id.book)
+        val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
+        mapFragment?.getMapAsync(this)
         callButton.setOnClickListener {
             makePhoneCall()
         }
@@ -200,6 +209,23 @@ class loadcompletedetails : Fragment() {
 
     companion object {
        private const val REQUEST_CALL_PHONE = 1
+    }
+
+    override fun onMapReady(googleMap: GoogleMap) {
+        mMap = googleMap
+
+        // Retrieve origin and destination from arguments
+        val origin = arguments?.getString("origin") ?: "New York"
+        val destination = arguments?.getString("destination") ?: "Los Angeles"
+
+        // Convert to LatLng (You need a geocoding service to get exact coordinates)
+        val originLatLng = LatLng(33.6844, 73.0479) // Example: Islamabad
+        val destinationLatLng = LatLng(31.5497, 74.3436) // Example: Lahore
+
+        mMap.addMarker(MarkerOptions().position(originLatLng).title("Pickup Location: $origin"))
+        mMap.addMarker(MarkerOptions().position(destinationLatLng).title("Drop-off Location: $destination"))
+
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(originLatLng, 10f))
     }
 
 }

@@ -1,14 +1,19 @@
 package com.example.truckers
 
+import android.app.Activity
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.os.Parcel
 import android.os.Parcelable
+import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
@@ -21,15 +26,20 @@ class Profile() : Fragment() {
     private lateinit var phone: TextView
     private lateinit var signout: TextView
     private lateinit var switch: TextView
-
+    private lateinit var profileImage: ImageView
+    private lateinit var editIcon: ImageView
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout
         val view = inflater.inflate(R.layout.fragment_profile, container, false)
-
+        profileImage = view.findViewById(R.id.imageView)
+        editIcon = view.findViewById(R.id.editIcon)
         // Initialize FirebaseAuth and DatabaseReference
+        editIcon.setOnClickListener {
+            openGallery()
+        }
         auth = FirebaseAuth.getInstance()
         database = FirebaseDatabase.getInstance().reference
 
@@ -91,6 +101,18 @@ class Profile() : Fragment() {
             }
         } else {
             Toast.makeText(requireContext(), "No user is logged in", Toast.LENGTH_SHORT).show()
+        }
+    }
+    private fun openGallery() {
+        val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+        resultLauncher.launch(intent)
+    }
+
+    private val resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val data: Intent? = result.data
+            val imageUri: Uri? = data?.data
+            profileImage.setImageURI(imageUri)
         }
     }
 
